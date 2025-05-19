@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -21,7 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'phone_number',
+        'profile_picture',
     ];
 
     /**
@@ -44,18 +47,67 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function campaigns()
+    /**
+     * Get the campaigns that belong to the user.
+     */
+    public function campaigns(): HasMany
     {
         return $this->hasMany(Campaign::class);
     }
 
-    public function donations()
+    /**
+     * Get the donations that belong to the user.
+     */
+    public function donations(): HasMany
     {
         return $this->hasMany(Donation::class);
     }
 
-    public function notifications()
+    /**
+     * Get the comments that belong to the user.
+     */
+    public function comments(): HasMany
     {
-        return $this->hasMany(Notification::class);
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * Get the feedbacks that belong to the user.
+     */
+    public function feedbacks(): HasMany
+    {
+        return $this->hasMany(Feedback::class);
+    }
+
+    /**
+     * Get the withdrawals that belong to the user.
+     */
+    public function withdrawals(): HasMany
+    {
+        return $this->hasMany(Withdrawal::class);
+    }
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if the user is a donatur.
+     */
+    public function isDonatur(): bool
+    {
+        return $this->role === 'donatur';
+    }
+
+    /**
+     * Check if the user is a pengelola.
+     */
+    public function isPengelola(): bool
+    {
+        return $this->role === 'pengelola';
     }
 }

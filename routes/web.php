@@ -39,7 +39,7 @@ Route::get('/login', function () {
 });
 
 Route::get('/dashboard', function () {
-  return view('dashboard');
+  return view('dashboard.index');
 });
 
 

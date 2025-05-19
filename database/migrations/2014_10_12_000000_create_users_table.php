@@ -17,8 +17,9 @@ return new class extends Migration
       $table->string('email')->unique();
       $table->string('password');
       $table->enum('role', ['admin', 'donor', 'creator'])->default('donor');
-      $table->
       $table->timestamp('email_verified_at')->nullable();
+      $table->string('phone_number')->nullable();
+      $table->string('profile_picture')->nullable();
       $table->rememberToken();
       $table->timestamps();
     });
