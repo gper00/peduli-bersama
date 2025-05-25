@@ -1,0 +1,422 @@
+@extends('dashboard.layout')
+
+@section('page-content')
+
+<div class="d-none" id="success-message">{{ session('success') }}</div>
+<div class="d-none" id="error-message">{{ session('error') }}</div>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Campaign Details</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="{{ route('dashboard.index') }}">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('dashboard.campaigns.index') }}">Campaigns</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    Details
+                </li>
+            </ul>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Campaign Information</h4>
+                            <div class="ml-auto">
+                                <a href="{{ route('dashboard.campaigns.edit', $campaign->slug) }}" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-edit"></i> Edit
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <img src="/storage/{{ $campaign->cover_image ?? 'default/campaign.jpg' }}" class="img-fluid rounded" alt="{{ $campaign->title }}">
+                        </div>
+
+                        <h2>{{ $campaign->title }}</h2>
+
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <p class="text-muted mb-1">Category</p>
+                                <p class="font-weight-bold">{{ $campaign->category->name ?? '-' }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-muted mb-1">Status</p>
+                                <p>
+                                    @if($campaign->status == 'active')
+                                        <span class="badge badge-success">Active</span>
+                                    @elseif($campaign->status == 'completed')
+                                        <span class="badge badge-info">Completed</span>
+                                    @elseif($campaign->status == 'rejected')
+                                        <span class="badge badge-danger">Rejected</span>
+                                    @else
+                                        <span class="badge badge-secondary">Draft</span>
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-muted mb-1">Created By</p>
+                                <p class="font-weight-bold">{{ $campaign->user->name ?? '-' }}</p>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Start Date</p>
+                                <p class="font-weight-bold">{{ \Carbon\Carbon::parse($campaign->start_date)->format('d M Y') }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">End Date</p>
+                                <p class="font-weight-bold">{{ \Carbon\Carbon::parse($campaign->end_date)->format('d M Y') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <p class="text-muted mb-1">Fundraising Progress</p>
+                                <div class="progress mb-2" style="height: 10px">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ $campaign->progress_percentage }}%"
+                                         aria-valuenow="{{ $campaign->progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="font-weight-bold">Rp {{ number_format($campaign->current_amount) }}</p>
+                                    <p>{{ $campaign->progress_percentage }}%</p>
+                                    <p class="font-weight-bold">Rp {{ number_format($campaign->target_amount) }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <p class="text-muted mb-1">Days Remaining</p>
+                                <p class="font-weight-bold">
+                                    @if($campaign->days_remaining > 0)
+                                        {{ $campaign->days_remaining }} days
+                                    @else
+                                        <span class="text-danger">Ended</span>
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-muted mb-1">Donors</p>
+                                <p class="font-weight-bold">{{ $campaign->donor_count }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-muted mb-1">Donations</p>
+                                <p class="font-weight-bold">{{ $campaign->donations->count() }}</p>
+                            </div>
+                        </div>
+
+                        <div class="separator-solid mt-3 mb-4"></div>
+
+                        <h4>Description</h4>
+                        <div class="campaign-description mt-3">
+                            {!! $campaign->description !!}
+                        </div>
+                    </div>
+                </div>
+
+                @if($campaign->updates->count() > 0)
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Campaign Updates</h4>
+                    </div>
+                    <div class="card-body">
+                        @foreach($campaign->updates as $update)
+                        <div class="campaign-update mb-4">
+                            <h5>{{ $update->title }}</h5>
+                            <p class="text-muted">{{ $update->created_at->diffForHumans() }}</p>
+                            <div class="update-content">
+                                {!! $update->content !!}
+                            </div>
+                        </div>
+                        @if(!$loop->last)
+                        <div class="separator-dashed my-3"></div>
+                        @endif
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Actions</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-column">
+                            <a href="{{ route('dashboard.campaigns.edit', $campaign->slug) }}" class="btn btn-primary mb-2">
+                                <i class="fa fa-edit"></i> Edit Campaign
+                            </a>
+
+                            @if($campaign->status == 'draft')
+                            <form action="{{ route('dashboard.campaigns.change-status', $campaign->slug) }}" method="POST" class="mb-2" id="publish-form">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status" value="active">
+                                <button type="button" class="btn btn-success btn-block" id="publish-btn">
+                                    <i class="fa fa-check-circle"></i> Publish Campaign
+                                </button>
+                            </form>
+                            @elseif($campaign->status == 'active')
+                            <form action="{{ route('dashboard.campaigns.change-status', $campaign->slug) }}" method="POST" class="mb-2" id="complete-form">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status" value="completed">
+                                <button type="button" class="btn btn-info btn-block" id="complete-btn">
+                                    <i class="fa fa-flag-checkered"></i> Mark as Completed
+                                </button>
+                            </form>
+                            @endif
+
+                            <a href="{{ url('/campaigns/'.$campaign->slug) }}" target="_blank" class="btn btn-secondary mb-2">
+                                <i class="fa fa-eye"></i> View Public Page
+                            </a>
+
+                            <form id="delete-form" action="{{ route('dashboard.campaigns.destroy', $campaign->slug) }}" method="POST" class="mt-2">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-danger btn-block" id="delete-campaign-btn">
+                                    <i class="fa fa-trash"></i> Delete Campaign
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Recent Donations</h4>
+                            @if($campaign->donations->count() > 0)
+                            <div class="ml-auto">
+                                <a href="{{ route('dashboard.index') }}?campaign={{ $campaign->id }}" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-list"></i> View All
+                                </a>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Donor</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($campaign->donations()->latest()->take(5)->get() as $donation)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar avatar-sm mr-2">
+                                                    <img src="/storage/{{ $donation->user->image ?? 'default/user.jpg' }}" alt="" class="avatar-img rounded-circle">
+                                                </div>
+                                                <div>{{ $donation->user->name ?? 'Anonymous' }}</div>
+                                            </div>
+                                        </td>
+                                        <td>Rp {{ number_format($donation->amount) }}</td>
+                                        <td>{{ $donation->created_at->diffForHumans() }}</td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center py-3">Belum ada donasi</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Comments</h4>
+                            @if($campaign->comments->count() > 0)
+                            <div class="ml-auto">
+                                <a href="{{ route('dashboard.campaigns.index') }}?slug={{ $campaign->slug }}&view=comments" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-list"></i> View All
+                                </a>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Comment</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($campaign->comments()->latest()->take(5)->get() as $comment)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar avatar-sm mr-2">
+                                                    <img src="/storage/{{ $comment->user->image ?? 'default/user.jpg' }}" alt="" class="avatar-img rounded-circle">
+                                                </div>
+                                                <div>{{ $comment->user->name }}</div>
+                                            </div>
+                                        </td>
+                                        <td>{{ Str::limit($comment->content, 30) }}</td>
+                                        <td>{{ $comment->created_at->diffForHumans() }}</td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center py-3">Belum ada komentar</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        // Handle success messages with SweetAlert
+        var successMessage = $('#success-message').text();
+        if (successMessage && successMessage.trim() !== '') {
+            swal({
+                title: "Berhasil!",
+                text: successMessage,
+                icon: "success",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        className: "btn btn-success",
+                    },
+                },
+            });
+        }
+        
+        // Handle error messages with SweetAlert
+        var errorMessage = $('#error-message').text();
+        if (errorMessage && errorMessage.trim() !== '') {
+            swal({
+                title: "Error!",
+                text: errorMessage,
+                icon: "error",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        className: "btn btn-danger",
+                    },
+                },
+            });
+        }
+        
+        // SweetAlert for delete button
+        $('#delete-campaign-btn').on('click', function(e) {
+            e.preventDefault();
+            const deleteForm = document.getElementById('delete-form');
+            
+            swal({
+                title: "Apakah Anda yakin?",
+                text: "Anda akan menghapus campaign ini. Tindakan ini tidak dapat dibatalkan!",
+                type: "warning",
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        text: "Ya, hapus!",
+                        className: "btn btn-primary",
+                    },
+                    cancel: {
+                        visible: true,
+                        className: "btn btn-danger",
+                    },
+                },
+            }).then((willDelete) => {
+                if (willDelete) {
+                    deleteForm.submit();
+                }
+            });
+        });
+        
+        // SweetAlert for publish campaign button
+        $('#publish-btn').on('click', function(e) {
+            e.preventDefault();
+            const publishForm = document.getElementById('publish-form');
+            
+            swal({
+                title: "Publish Campaign?",
+                text: "Campaign akan dipublikasikan dan terlihat oleh publik.",
+                type: "info",
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        text: "Ya, publikasikan!",
+                        className: "btn btn-primary",
+                    },
+                    cancel: {
+                        visible: true,
+                        className: "btn btn-danger",
+                    },
+                },
+            }).then((willPublish) => {
+                if (willPublish) {
+                    publishForm.submit();
+                }
+            });
+        });
+        
+        // SweetAlert for mark as completed button
+        $('#complete-btn').on('click', function(e) {
+            e.preventDefault();
+            const completeForm = document.getElementById('complete-form');
+            
+            swal({
+                title: "Tandai sebagai Selesai?",
+                text: "Campaign akan ditandai sebagai selesai dan tidak akan menerima donasi baru.",
+                type: "info",
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        text: "Ya, tandai selesai!",
+                        className: "btn btn-primary",
+                    },
+                    cancel: {
+                        visible: true,
+                        className: "btn btn-danger",
+                    },
+                },
+            }).then((willComplete) => {
+                if (willComplete) {
+                    completeForm.submit();
+                }
+            });
+        });
+    });
+</script>
+@endsection

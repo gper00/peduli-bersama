@@ -57,18 +57,18 @@ $(document).ready(function () {
     });
 
     // Customize JS
-    // Log out
+    // Log out - for elements with class .logout
     $(".logout").click(function (e) {
         e.preventDefault();
         const formLogout = this.parentElement;
         swal({
-            title: "Are you sure?",
-            text: "This will make your login session end!",
+            title: "Apakah Anda yakin?",
+            text: "Tindakan ini akan mengakhiri sesi login Anda!",
             type: "warning",
             icon: "warning",
             buttons: {
                 confirm: {
-                    text: "Yes, logout!",
+                    text: "Ya, logout!",
                     className: "btn btn-primary",
                 },
                 cancel: {
@@ -76,9 +76,36 @@ $(document).ready(function () {
                     className: "btn btn-danger",
                 },
             },
-        }).then((willDelete) => {
-            if (willDelete) {
+        }).then((willLogout) => {
+            if (willLogout) {
                 formLogout.submit();
+            }
+        });
+    });
+    
+    // Log out - for sidebar logout button with ID #logout-btn
+    $("#logout-btn").click(function (e) {
+        e.preventDefault();
+        const logoutForm = document.getElementById('logout-form');
+        
+        swal({
+            title: "Apakah Anda yakin?",
+            text: "Tindakan ini akan mengakhiri sesi login Anda!",
+            type: "warning",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "Ya, logout!",
+                    className: "btn btn-primary",
+                },
+                cancel: {
+                    visible: true,
+                    className: "btn btn-danger",
+                },
+            },
+        }).then((willLogout) => {
+            if (willLogout) {
+                logoutForm.submit();
             }
         });
     });

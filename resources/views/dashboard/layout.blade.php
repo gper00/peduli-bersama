@@ -141,5 +141,8 @@
 
 	{{-- Custom JS --}}
 	<script src="/assets/dashboard/js/custom.js"></script>
+
+    {{-- Page specific scripts --}}
+    @yield('scripts')
 </body>
 </html>

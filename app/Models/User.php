@@ -20,11 +20,18 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'role',
         'phone_number',
-        'profile_picture',
+        'image',
+        'bio',
+        'address',
+        'facebook_url',
+        'twitter_url',
+        'instagram_url',
+        'is_active',
     ];
 
     /**
@@ -94,20 +101,66 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->role === 'admin';
     }
-
+    
     /**
-     * Check if the user is a donatur.
+     * Check if the user is the super admin (first admin in the system).
      */
-    public function isDonatur(): bool
+    public function isSuperAdmin(): bool
     {
-        return $this->role === 'donatur';
+        // Super admin is the first admin user (ID = 1)
+        return $this->isAdmin() && $this->id === 1;
     }
 
     /**
-     * Check if the user is a pengelola.
+     * Check if the user is a donor.
      */
-    public function isPengelola(): bool
+    public function isDonor(): bool
     {
-        return $this->role === 'pengelola';
+        return $this->role === 'donor';
+    }
+
+    /**
+     * Check if the user is a creator.
+     */
+    public function isCreator(): bool
+    {
+        return $this->role === 'creator';
+    }
+
+    /**
+     * Get the user's profile image URL.
+     */
+    public function getImageUrlAttribute(): string
+    {
+        if ($this->image) {
+            return asset('storage/' . $this->image);
+        }
+
+        // Return default avatar if no image
+        return asset('assets/img/default-avatar.png');
+    }
+
+    /**
+     * Get the user's display name.
+     */
+    public function getDisplayNameAttribute(): string
+    {
+        return $this->username ?: $this->name;
+    }
+
+    /**
+     * Scope to get users by role.
+     */
+    public function scopeByRole($query, $role)
+    {
+        return $query->where('role', $role);
+    }
+
+    /**
+     * Scope to get active users (email verified).
+     */
+    public function scopeActive($query)
+    {
+        return $query->whereNotNull('email_verified_at');
     }
 }

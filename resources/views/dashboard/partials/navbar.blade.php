@@ -25,18 +25,21 @@
 
         <div class="container-fluid">
             <div class="collapse" id="search-nav">
-                <form class="navbar-left navbar-form nav-search mr-md-3">
+                <div class="navbar-left navbar-form nav-search mr-md-3">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <button type="submit" class="btn btn-search pr-1">
-                                <i class="fa fa-search search-icon"></i>
-                            </button>
+                            <span class="input-group-text" id="basic-addon1">
+                                <i class="fas fa-calendar-day"></i>
+                            </span>
                         </div>
-                        <input type="text" placeholder="Search ..." class="form-control">
+                        <span class="form-control">
+                            {{ \Carbon\Carbon::now()->format('l, j F Y') }}
+                        </span>
                     </div>
-                </form>
+                </div>
             </div>
             <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+                @if (auth()->user()->role == 'admin')
                 <li class="nav-item toggle-nav-search hidden-caret">
                     <a class="nav-link" data-toggle="collapse" href="#search-nav" role="button" aria-expanded="false" aria-controls="search-nav">
                         <i class="fa fa-search"></i>
@@ -218,12 +221,17 @@
                         </div>
                     </div>
                 </li>
+                @endif
+
 
                 <li class="nav-item dropdown hidden-caret">
                     <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
                         <div class="avatar-sm">
-                            {{-- <img src="/storage/{{ Auth::user()->image ?? 'default/user.jpg' }}" alt="{{ Auth::user()->name }}" class="avatar-img rounded-circle"> --}}
-                            <img src="https://dummyimage.com/100x100/000/fff" class="avatar-img rounded-circle">
+                            @if (auth()->user()->image)
+                                <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="{{ auth()->user()->name }}" class="avatar-img rounded-circle">
+                            @else
+                                <img src="{{ asset('storage/default/user.jpg') }}" alt="{{ auth()->user()->name }}" class="avatar-img rounded-circle">
+                            @endif
                         </div>
                     </a>
                     <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -246,7 +254,7 @@
                             </li>
                             <li>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">My Profile</a>
+                                <a class="dropdown-item" href="{{ route('dashboard.profile.index') }}">My Profile</a>
                                 <div class="dropdown-divider"></div>
 
                                 <form action="/logout" method="post">
@@ -255,7 +263,6 @@
                                         Logout
                                     </button>
                                 </form>
-                                {{-- <a class="dropdown-item" href="#">Logout</a> --}}
                             </li>
                         </div>
                     </ul>

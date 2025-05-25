@@ -16,6 +16,7 @@ class Withdrawal extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'reference_number',
         'campaign_id',
         'user_id',
         'amount',
@@ -23,8 +24,16 @@ class Withdrawal extends Model
         'bank_name',
         'account_number',
         'account_name',
+        'bank_branch',
+        'bank_code',
+        'purpose',
         'evidence_file',
         'notes',
+        'rejection_reason',
+        'approved_by',
+        'approved_at',
+        'processed_by',
+        'processed_at',
     ];
 
     /**
@@ -34,6 +43,8 @@ class Withdrawal extends Model
      */
     protected $casts = [
         'amount' => 'integer',
+        'approved_at' => 'datetime',
+        'processed_at' => 'datetime',
     ];
 
     /**
@@ -51,6 +62,22 @@ class Withdrawal extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    /**
+     * Get the admin who approved the withdrawal.
+     */
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+    
+    /**
+     * Get the admin who processed the withdrawal.
+     */
+    public function processor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'processed_by');
+    }
 
     /**
      * Check if the withdrawal is pending.
@@ -61,11 +88,27 @@ class Withdrawal extends Model
     }
 
     /**
+     * Check if the withdrawal is processing.
+     */
+    public function isProcessing(): bool
+    {
+        return $this->status === 'processing';
+    }
+
+    /**
      * Check if the withdrawal is approved.
      */
     public function isApproved(): bool
     {
         return $this->status === 'approved';
+    }
+    
+    /**
+     * Check if the withdrawal is completed.
+     */
+    public function isCompleted(): bool
+    {
+        return $this->status === 'completed';
     }
 
     /**
@@ -79,20 +122,48 @@ class Withdrawal extends Model
     /**
      * Approve the withdrawal.
      */
-    public function approve(): bool
+    public function approve(int $approvedBy): bool
     {
-        return $this->update(['status' => 'approved']);
+        return $this->update([
+            'status' => 'approved',
+            'approved_by' => $approvedBy,
+            'approved_at' => now(),
+        ]);
+    }
+
+    /**
+     * Mark withdrawal as processing.
+     */
+    public function markAsProcessing(): bool
+    {
+        return $this->update(['status' => 'processing']);
+    }
+    
+    /**
+     * Complete the withdrawal.
+     */
+    public function complete(int $processedBy): bool
+    {
+        return $this->update([
+            'status' => 'completed',
+            'processed_by' => $processedBy,
+            'processed_at' => now(),
+        ]);
     }
 
     /**
      * Reject the withdrawal.
      */
-    public function reject($notes = null): bool
+    public function reject(int $approvedBy, string $reason = null): bool
     {
-        $data = ['status' => 'rejected'];
+        $data = [
+            'status' => 'rejected',
+            'approved_by' => $approvedBy,
+            'approved_at' => now(),
+        ];
 
-        if ($notes) {
-            $data['notes'] = $notes;
+        if ($reason) {
+            $data['rejection_reason'] = $reason;
         }
 
         return $this->update($data);
@@ -105,6 +176,14 @@ class Withdrawal extends Model
     {
         return $query->where('status', 'pending');
     }
+    
+    /**
+     * Scope a query to only include processing withdrawals.
+     */
+    public function scopeProcessing($query)
+    {
+        return $query->where('status', 'processing');
+    }
 
     /**
      * Scope a query to only include approved withdrawals.
@@ -112,6 +191,14 @@ class Withdrawal extends Model
     public function scopeApproved($query)
     {
         return $query->where('status', 'approved');
+    }
+    
+    /**
+     * Scope a query to only include completed withdrawals.
+     */
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
     }
 
     /**

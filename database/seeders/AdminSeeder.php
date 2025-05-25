@@ -15,8 +15,9 @@ class AdminSeeder extends Seeder
     {
         User::create([
             'name' => 'Super Admin',
+            'username' => 'gper',
             'email' => 'admin@pedulibersama.com',
-            'password' => Hash::make('admin123'),
+            'password' => Hash::make('kosongin'),
             'role' => 'admin',
             'email_verified_at' => now(),
             'phone_number' => '081234567890',

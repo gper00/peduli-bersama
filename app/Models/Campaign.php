@@ -21,13 +21,20 @@ class Campaign extends Model
         'category_id',
         'title',
         'slug',
+        'short_description',
+        'description',
         'target_amount',
         'current_amount',
         'start_date',
         'end_date',
-        'description',
         'cover_image',
         'status',
+        'verification_status',
+        'featured',
+        'donor_count',
+        'view_count',
+        'share_count',
+        'rejection_reason',
     ];
 
     /**

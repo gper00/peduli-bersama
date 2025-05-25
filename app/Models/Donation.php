@@ -16,14 +16,23 @@ class Donation extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'invoice_number',
         'campaign_id',
         'user_id',
         'amount',
         'status',
         'payment_method',
         'payment_code',
+        'payment_url',
+        'transaction_id',
+        'external_reference',
+        'payment_date',
         'anonymous',
+        'donor_name',
+        'donor_email',
+        'donor_phone',
         'message',
+        'payment_details',
     ];
 
     /**
@@ -34,6 +43,8 @@ class Donation extends Model
     protected $casts = [
         'amount' => 'integer',
         'anonymous' => 'boolean',
+        'payment_date' => 'datetime',
+        'payment_details' => 'json',
     ];
 
     /**
@@ -61,6 +72,10 @@ class Donation extends Model
             return 'Anonim';
         }
 
+        if ($this->donor_name) {
+            return $this->donor_name;
+        }
+        
         return $this->user ? $this->user->name : 'Donatur';
     }
 
@@ -86,5 +101,29 @@ class Donation extends Model
     public function scopeFailed($query)
     {
         return $query->where('status', 'failed');
+    }
+    
+    /**
+     * Scope a query to only include processing donations.
+     */
+    public function scopeProcessing($query)
+    {
+        return $query->where('status', 'processing');
+    }
+    
+    /**
+     * Scope a query to only include expired donations.
+     */
+    public function scopeExpired($query)
+    {
+        return $query->where('status', 'expired');
+    }
+    
+    /**
+     * Scope a query to only include refunded donations.
+     */
+    public function scopeRefunded($query)
+    {
+        return $query->where('status', 'refunded');
     }
 }

@@ -17,13 +17,20 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->string('slug')->unique();
+            $table->string('short_description')->nullable();
+            $table->text('description');
             $table->bigInteger('target_amount');
             $table->bigInteger('current_amount')->default(0);
             $table->date('start_date');
             $table->date('end_date');
-            $table->text('description');
             $table->string('cover_image')->nullable();
             $table->enum('status', ['draft', 'active', 'completed', 'rejected'])->default('draft');
+            $table->enum('verification_status', ['pending', 'verified', 'rejected'])->default('pending');
+            $table->boolean('featured')->default(false);
+            $table->integer('donor_count')->default(0);
+            $table->integer('view_count')->default(0);
+            $table->integer('share_count')->default(0);
+            $table->text('rejection_reason')->nullable();
             $table->timestamps();
         });
     }

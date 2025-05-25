@@ -17,6 +17,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('parent_id')->nullable()->constrained('comments')->onDelete('cascade');
             $table->text('comment');
+            $table->integer('likes')->default(0);
+            $table->boolean('is_pinned')->default(false);
+            $table->enum('status', ['published', 'pending', 'spam', 'deleted'])->default('published');
+            $table->timestamp('moderated_at')->nullable();
+            $table->foreignId('moderated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

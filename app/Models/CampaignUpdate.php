@@ -17,9 +17,24 @@ class CampaignUpdate extends Model
      */
     protected $fillable = [
         'campaign_id',
+        'user_id',
         'title',
         'description',
+        'type',
+        'status',
         'image',
+        'attachments',
+        'pinned',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'attachments' => 'json',
+        'pinned' => 'boolean',
     ];
 
     /**
@@ -31,10 +46,54 @@ class CampaignUpdate extends Model
     }
 
     /**
-     * Get the pengelola (via campaign) that owns the update.
+     * Get the user that created the update.
      */
-    public function pengelola()
+    public function user(): BelongsTo
     {
-        return $this->campaign->user;
+        return $this->belongsTo(User::class);
+    }
+    
+    /**
+     * Scope a query to only include published updates.
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('status', 'published');
+    }
+    
+    /**
+     * Scope a query to only include draft updates.
+     */
+    public function scopeDraft($query)
+    {
+        return $query->where('status', 'draft');
+    }
+    
+    /**
+     * Scope a query to only include pinned updates.
+     */
+    public function scopePinned($query)
+    {
+        return $query->where('pinned', true);
+    }
+    
+    /**
+     * Scope a query to filter by update type.
+     */
+    public function scopeOfType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+    
+    /**
+     * Get the image URL attribute.
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if ($this->image) {
+            return asset('storage/' . $this->image);
+        }
+        
+        return null;
     }
 }

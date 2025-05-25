@@ -17,8 +17,12 @@ class Category extends Model
      */
     protected $fillable = [
         'name',
+        'slug',
         'description',
         'icon',
+        'color',
+        'is_active',
+        'sort_order',
     ];
 
     /**
@@ -46,5 +50,42 @@ class Category extends Model
     {
         return $this->campaigns()
                    ->sum('current_amount');
+    }
+    
+    /**
+     * Scope a query to only include active categories.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+    
+    /**
+     * Scope a query to order categories by sort_order.
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order');
+    }
+    
+    /**
+     * Get the category icon URL.
+     */
+    public function getIconUrlAttribute(): string
+    {
+        if ($this->icon) {
+            return asset('storage/' . $this->icon);
+        }
+        
+        // Return default icon if no icon is set
+        return asset('assets/img/default-category-icon.png');
+    }
+    
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

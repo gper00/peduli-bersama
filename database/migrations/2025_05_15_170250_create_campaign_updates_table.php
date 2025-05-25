@@ -14,9 +14,14 @@ return new class extends Migration
         Schema::create('campaign_updates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('campaign_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description');
+            $table->enum('type', ['general', 'milestone', 'report', 'thank_you'])->default('general');
+            $table->enum('status', ['draft', 'published'])->default('published');
             $table->string('image')->nullable();
+            $table->json('attachments')->nullable();
+            $table->boolean('pinned')->default(false);
             $table->timestamps();
         });
     }
