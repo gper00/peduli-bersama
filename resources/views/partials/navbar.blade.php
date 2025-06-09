@@ -30,7 +30,6 @@
                         Daftar
                     </a>
                 @else
-                    @if(Auth::user()->role === 'admin')
                     <div class="relative" x-data="{ notificationOpen: false }" class="mr-4">
                         <button @click="notificationOpen = !notificationOpen" class="flex items-center text-gray-700 hover:text-blue-500 px-2 py-2 rounded-md text-sm font-medium focus:outline-none">
                             <div class="relative">
@@ -47,11 +46,10 @@
                                 <div class="text-center text-gray-500 py-4 text-sm" id="no-notifications">Memuat notifikasi...</div>
                             </div>
                             <div class="p-2 border-t border-gray-100 text-center">
-                                <a href="{{ route('dashboard.messages.index') }}" class="text-sm text-blue-600 hover:text-blue-800">Lihat Semua Pesan</a>
+                                <a href="{{ route('dashboard.notifications.index') }}" class="text-sm text-blue-600 hover:text-blue-800">Lihat Semua Notifikasi</a>
                             </div>
                         </div>
                     </div>
-                    @endif
                     
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium focus:outline-none">
@@ -177,9 +175,9 @@
         }
     });
     
-    // Fungsi untuk memuat notifikasi pesan
+    // Fungsi untuk memuat notifikasi
     function loadMessageNotifications() {
-        fetch('{{ route("dashboard.messages.unread-count") }}')
+        fetch('{{ route("dashboard.notifications.unread-count") }}')
             .then(response => response.json())
             .then(data => {
                 const notificationBadge = document.getElementById('notification-badge');
@@ -189,14 +187,14 @@
                     notificationBadge.textContent = count;
                     notificationBadge.style.display = 'flex';
                     
-                    // Ambil 5 pesan terbaru
-                    return fetch('{{ route("dashboard.messages.index") }}?limit=5&format=json');
+                    // Ambil notifikasi terbaru
+                    return fetch('{{ route("dashboard.notifications.latest") }}');
                 } else {
                     notificationBadge.style.display = 'none';
                     
                     const noNotifications = document.getElementById('no-notifications');
                     if (noNotifications) {
-                        noNotifications.textContent = 'Tidak ada pesan baru';
+                        noNotifications.textContent = 'Tidak ada notifikasi baru';
                     }
                 }
             })
@@ -205,34 +203,40 @@
                 return null;
             })
             .then(data => {
-                if (!data) return;
-                
-                const container = document.getElementById('notifications-container');
-                if (!container) return;
-                
-                container.innerHTML = '';
-                
-                if (data.messages.length === 0) {
-                    container.innerHTML = '<div class="text-center text-gray-500 py-4 text-sm">Tidak ada pesan baru</div>';
-                    return;
+                if (data && data.notifications && data.notifications.length > 0) {
+                    const container = document.getElementById('notifications-container');
+                    container.innerHTML = '';
+                    
+                    data.notifications.forEach(notification => {
+                        let icon = 'bell';
+                        let iconColor = 'text-yellow-500';
+                        
+                        if (notification.type === 'donation') {
+                            icon = 'donate';
+                            iconColor = 'text-green-500';
+                        } else if (notification.type === 'feedback') {
+                            icon = 'comment-alt';
+                            iconColor = 'text-blue-500';
+                        }
+                        
+                        const timeAgo = new Date(notification.created_at).toLocaleString('id-ID');
+                        
+                        container.innerHTML += `
+                            <div class="p-3 border-b border-gray-100 hover:bg-gray-50">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-${icon} ${iconColor}"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm font-medium text-gray-900">${notification.title}</p>
+                                        <p class="text-sm text-gray-500">${notification.message}</p>
+                                        <p class="text-xs text-gray-400 mt-1">${timeAgo}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
                 }
-                
-                data.messages.forEach(message => {
-                    const item = document.createElement('a');
-                    item.href = `/dashboard/messages/${message.id}`;
-                    item.className = 'block p-3 hover:bg-gray-50 border-b border-gray-100';
-                    
-                    const content = `
-                        <div class="flex justify-between items-start">
-                            <p class="text-sm font-medium text-gray-800">${message.subject}</p>
-                            <span class="text-xs text-gray-500">${message.time_ago}</span>
-                        </div>
-                        <p class="text-xs text-gray-600 mt-1">${message.name} - ${message.email}</p>
-                    `;
-                    
-                    item.innerHTML = content;
-                    container.appendChild(item);
-                });
             })
             .catch(error => {
                 console.error('Error loading notifications:', error);

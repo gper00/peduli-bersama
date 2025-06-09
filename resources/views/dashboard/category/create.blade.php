@@ -1,6 +1,7 @@
 @extends('dashboard.layout')
 
 @section('page-content')
+<div class="content">
 <div class="page-inner">
     <div class="page-header">
         <h4 class="page-title">Tambah Kategori</h4>
@@ -24,17 +25,17 @@
             </li>
         </ul>
     </div>
-    
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Form Tambah Kategori</div>
+                    <div class="card-title">Tambah Kategori</div>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('dashboard.categories.store') }}" method="POST">
                         @csrf
-                        
+
                         <div class="form-group">
                             <label for="name">Nama Kategori <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
@@ -44,7 +45,7 @@
                             </div>
                             @enderror
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="description">Deskripsi</label>
                             <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3">{{ old('description') }}</textarea>
@@ -54,7 +55,7 @@
                             </div>
                             @enderror
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="icon">Icon (FontAwesome Class)</label>
                             <div class="input-group">
@@ -70,7 +71,7 @@
                             </div>
                             @enderror
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="color">Warna</label>
                             <input type="color" class="form-control @error('color') is-invalid @enderror" id="color" name="color" value="{{ old('color', '#3498db') }}">
@@ -80,7 +81,7 @@
                             </div>
                             @enderror
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="sort_order">Urutan</label>
                             <input type="number" class="form-control @error('sort_order') is-invalid @enderror" id="sort_order" name="sort_order" value="{{ old('sort_order', 0) }}" min="0">
@@ -91,7 +92,7 @@
                             </div>
                             @enderror
                         </div>
-                        
+
                         <div class="form-group">
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" value="1" {{ old('is_active') ? 'checked' : '' }}>
@@ -99,7 +100,7 @@
                             </div>
                             <small class="form-text text-muted">Jika diaktifkan, kategori ini akan ditampilkan di aplikasi.</small>
                         </div>
-                        
+
                         <div class="card-action">
                             <button type="submit" class="btn btn-primary">Simpan</button>
                             <a href="{{ route('dashboard.categories.index') }}" class="btn btn-danger">Batal</a>
@@ -110,6 +111,7 @@
         </div>
     </div>
 </div>
+<div>
 @endsection
 
 @section('scripts')

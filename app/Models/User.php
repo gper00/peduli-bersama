@@ -163,4 +163,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $query->whereNotNull('email_verified_at');
     }
+    
+    /**
+     * Get notifications for the user.
+     */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

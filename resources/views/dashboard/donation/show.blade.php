@@ -2,7 +2,7 @@
 
 @section('title', 'Detail Donasi | Peduli Bersama')
 
-@section('content')
+@section('page-content')
 <div class="container px-6 mx-auto grid">
     <div class="flex justify-between items-center my-6">
         <h2 class="text-2xl font-semibold text-gray-700">
@@ -173,7 +173,7 @@
                         
                         <div class="col-span-2">
                             <span class="text-sm font-medium text-gray-500">Email</span>
-                            <p class="text-gray-800 mt-1">{{ $donation->donor_email }}</p>
+                            <p class="text-gray-800 mt-1">{{ $donation->donor_email ?? ($donation->user ? $donation->user->email : 'Email tidak tersedia') }}</p>
                         </div>
                         
                         @if($donation->donor_phone)

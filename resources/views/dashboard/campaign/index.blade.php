@@ -77,9 +77,9 @@
                                         <td>
                                             <div class="avatar avatar-lg my-3">
                                                 @if($campaign->cover_image)
-                                                <img src="/storage/{{ $campaign->cover_image }}" alt="{{ $campaign->title }}" class="rounded" style="width: 70px; height: calc(70px * 3 / 4); object-fit: cover;">
+                                                <img src="{{ asset('storage/' . $campaign->cover_image) }}" alt="{{ $campaign->title }}" class="rounded" style="width: 70px; height: calc(70px * 3 / 4); object-fit: cover;">
                                                 @else
-                                                <img src="/storage/default/image.jpg" alt="{{ $campaign->title }}" class="rounded" style="width: 70px; height: calc(70px * 3 / 4); object-fit: cover;">
+                                                <img src="{{ asset('storage/default/image.jpg') }}" alt="{{ $campaign->title }}" class="rounded" style="width: 70px; height: calc(70px * 3 / 4); object-fit: cover;">
                                                 @endif
                                             </div>
                                         </td>
@@ -101,6 +101,18 @@
                                                 <span class="badge badge-danger">Rejected</span>
                                             @else
                                                 <span class="badge badge-secondary">Draft</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($campaign->verification_status == 'verified')
+                                                <span class="badge badge-success">Verified</span>
+                                            @elseif($campaign->verification_status == 'rejected')
+                                                <span class="badge badge-danger">Rejected</span>
+                                            @else
+                                                <span class="badge badge-warning">Pending</span>
+                                            @endif
+                                            @if($campaign->user->role == 'admin')
+                                                <span class="badge badge-info">Admin</span>
                                             @endif
                                         </td>
                                         <td>{{ \Carbon\Carbon::parse($campaign->end_date)->isoFormat('D MMM YY') }}</td>

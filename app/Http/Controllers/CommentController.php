@@ -13,12 +13,24 @@ class CommentController extends Controller
     /**
      * Store a newly created comment in storage.
      */
-    public function store(Request $request, Campaign $campaign)
+    public function store(Request $request, $campaignSlug)
     {
-        $validator = Validator::make($request->all(), [
-            'comment' => 'required|string|max:1000',
-            'parent_id' => 'nullable|exists:comments,id',
-        ]);
+        // Find campaign by slug
+        $campaign = Campaign::where('slug', $campaignSlug)->firstOrFail();
+        
+        // Different validation rules based on authentication status
+        if (Auth::check()) {
+            $validator = Validator::make($request->all(), [
+                'comment' => 'required|string|max:1000',
+                'parent_id' => 'nullable|exists:comments,id',
+            ]);
+        } else {
+            $validator = Validator::make($request->all(), [
+                'guest_name' => 'required|string|max:100',
+                'comment' => 'required|string|max:1000',
+                'parent_id' => 'nullable|exists:comments,id',
+            ]);
+        }
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -28,22 +40,36 @@ class CommentController extends Controller
 
         $comment = new Comment();
         $comment->campaign_id = $campaign->id;
-        $comment->user_id = Auth::id();
         $comment->parent_id = $request->parent_id;
         $comment->comment = $request->comment;
         
-        // Admin comments are automatically published, others may require moderation
-        if (Auth::user()->role === 'admin') {
-            $comment->status = 'published';
+        // Handle authenticated vs guest comments
+        if (Auth::check()) {
+            $comment->user_id = Auth::id();
+            
+            // Admin comments are automatically published, others require moderation
+            if (Auth::user()->role === 'admin') {
+                $comment->status = 'published';
+            } else {
+                $comment->status = 'pending'; // All comments require moderation
+            }
         } else {
-            // Check if moderation is required (can be configured in settings)
-            $requireModeration = false; // Default value, could be from settings
-            $comment->status = $requireModeration ? 'pending' : 'published';
+            // Guest comments
+            $comment->user_id = null;
+            $comment->guest_name = $request->guest_name;
+            $comment->status = 'pending'; // Always moderate guest comments
         }
         
         $comment->save();
+        
+        $message = 'Komentar Anda telah berhasil ditambahkan';
+        if ($comment->status === 'pending') {
+            $message .= ' dan sedang menunggu moderasi.'; 
+        } else {
+            $message .= '.'; 
+        }
 
-        return redirect()->back()->with('success', 'Komentar Anda telah berhasil ditambahkan.');
+        return redirect()->back()->with('success', $message);
     }
 
     /**

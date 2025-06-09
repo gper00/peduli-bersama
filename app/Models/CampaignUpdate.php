@@ -52,7 +52,7 @@ class CampaignUpdate extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+
     /**
      * Scope a query to only include published updates.
      */
@@ -60,7 +60,7 @@ class CampaignUpdate extends Model
     {
         return $query->where('status', 'published');
     }
-    
+
     /**
      * Scope a query to only include draft updates.
      */
@@ -68,7 +68,7 @@ class CampaignUpdate extends Model
     {
         return $query->where('status', 'draft');
     }
-    
+
     /**
      * Scope a query to only include pinned updates.
      */
@@ -76,7 +76,7 @@ class CampaignUpdate extends Model
     {
         return $query->where('pinned', true);
     }
-    
+
     /**
      * Scope a query to filter by update type.
      */
@@ -84,7 +84,7 @@ class CampaignUpdate extends Model
     {
         return $query->where('type', $type);
     }
-    
+
     /**
      * Get the image URL attribute.
      */
@@ -93,7 +93,7 @@ class CampaignUpdate extends Model
         if ($this->image) {
             return asset('storage/' . $this->image);
         }
-        
+
         return null;
     }
 }

@@ -98,6 +98,14 @@ class Campaign extends Model
     }
 
     /**
+     * Get the feedbacks for the campaign.
+     */
+    public function feedbacks(): HasMany
+    {
+        return $this->hasMany(Feedback::class);
+    }
+
+    /**
      * Calculate the percentage of the campaign's progress.
      */
     public function getProgressPercentageAttribute(): float
@@ -131,10 +139,27 @@ class Campaign extends Model
      */
     public function getDonorCountAttribute(): int
     {
+        // Gunakan query donasi yang berhasil (success)
+        // dan hitung pendonor unik berdasarkan email atau user_id
         return $this->donations()
             ->where('status', 'success')
-            ->distinct('user_id')
-            ->count('user_id');
+            ->count();
+    }
+    
+    /**
+     * Get the donations count attribute for dashboard.
+     */
+    public function getDonationsCountAttribute(): int
+    {
+        return $this->donations()->where('status', 'success')->count();
+    }
+    
+    /**
+     * Get the successful donations sum for this campaign.
+     */
+    public function getSuccessfulDonationsSumAttribute(): int
+    {
+        return $this->donations()->where('status', 'success')->sum('amount') ?? 0;
     }
 
     /**

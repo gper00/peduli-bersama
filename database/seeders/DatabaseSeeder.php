@@ -14,9 +14,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategorySeeder::class,
             UserSeeder::class, // Replacing AdminSeeder
-            CampaignSeeder::class,
-            DonationSeeder::class,
-            CommentSeeder::class,
+            // CampaignSeeder::class, // Reemplazado por DetailedCampaignSeeder
+            DetailedCampaignSeeder::class, // Nuevo seeder con diversos estados de campaña
+            // DonationSeeder::class, // Las donaciones están incluidas en DetailedCampaignSeeder
+            // CommentSeeder::class, // Los comentarios están incluidos en DetailedCampaignSeeder
             CampaignUpdateSeeder::class,
             FeedbackSeeder::class,
             WithdrawalSeeder::class,

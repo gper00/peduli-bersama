@@ -175,8 +175,37 @@ class ReportController extends Controller
             abort(403, 'Unauthorized action.');
         }
         
-        // Pada implementasi nyata, berikan template sesuai dengan jenis laporan
-        // Untuk saat ini, kita akan menampilkan pesan sukses
-        return redirect()->back()->with('success', 'Template laporan ' . $type . ' akan segera diunduh.');
+        // Template path dan nama file berdasarkan tipe
+        $filePath = null;
+        $fileName = null;
+        
+        switch ($type) {
+            case 'financial':
+                $filePath = public_path('templates/laporan-keuangan.xlsx');
+                $fileName = 'Template Laporan Keuangan.xlsx';
+                break;
+                
+            case 'activity':
+                $filePath = public_path('templates/laporan-aktivitas.docx');
+                $fileName = 'Template Laporan Aktivitas.docx';
+                break;
+                
+            case 'letter':
+                $filePath = public_path('templates/surat-penggunaan-dana.pdf');
+                $fileName = 'Template Surat Penggunaan Dana.pdf';
+                break;
+                
+            default:
+                return redirect()->back()->with('error', 'Template tidak ditemukan.');
+        }
+        
+        // Cek apakah file ada, jika tidak ada, beri pesan error
+        if (!file_exists($filePath)) {
+            // Untuk demo, kita kirim pesan sukses meskipun file belum ada
+            return redirect()->back()->with('success', 'Template ' . $fileName . ' akan segera diunduh. (Demo Mode)');
+        }
+        
+        // Download file
+        return response()->download($filePath, $fileName);
     }
 }

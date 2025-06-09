@@ -2,221 +2,274 @@
 
 @section('title', 'Laporan Kampanye: ' . $campaign->title . ' | Peduli Bersama')
 
-@section('content')
-<div class="container px-6 mx-auto grid">
-    <div class="flex justify-between items-center my-6">
-        <h2 class="text-2xl font-semibold text-gray-700">
-            Laporan Kampanye: {{ $campaign->title }}
-        </h2>
-        <a href="{{ route('reports.index') }}" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-md active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring">
-            <i class="fas fa-arrow-left mr-2"></i> Kembali
-        </a>
-    </div>
-
-    <!-- Notification Messages -->
-    @if(session('success'))
-    <div class="mb-6 px-4 py-3 bg-green-50 text-green-800 rounded-lg shadow-md">
-        <div class="flex items-center">
-            <i class="fas fa-check-circle mr-2"></i>
-            <span>{{ session('success') }}</span>
+@section('page-content')
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Laporan Kampanye: {{ $campaign->title }}</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="{{ route('dashboard.index') }}">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('dashboard.reports.index') }}">Dokumentasi & Laporan</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('dashboard.reports.campaign', $campaign->id) }}">Laporan Kampanye</a>
+                </li>
+            </ul>
         </div>
-    </div>
-    @endif
 
-    @if(session('error'))
-    <div class="mb-6 px-4 py-3 bg-red-50 text-red-800 rounded-lg shadow-md">
-        <div class="flex items-center">
-            <i class="fas fa-exclamation-circle mr-2"></i>
-            <span>{{ session('error') }}</span>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="text-right">
+                    <a href="{{ route('dashboard.reports.index') }}" class="btn btn-secondary">
+                        <i class="fa fa-arrow-left"></i> Kembali
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
-    @endif
+
+        <!-- Notification Messages -->
+        @if(session('success'))
+        <div class="alert alert-success" role="alert">
+            <i class="fa fa-check-circle mr-2"></i> {{ session('success') }}
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div class="alert alert-danger" role="alert">
+            <i class="fa fa-exclamation-circle mr-2"></i> {{ session('error') }}
+        </div>
+        @endif
 
     <!-- Campaign Info -->
-    <div class="grid gap-6 mb-8 md:grid-cols-2">
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <h3 class="text-lg font-semibold text-gray-700">Informasi Kampanye</h3>
-            </div>
-            <div class="p-6">
-                <div class="flex items-start mb-6">
-                    <img src="{{ $campaign->featured_image ?: asset('images/default-campaign.jpg') }}" alt="{{ $campaign->title }}" class="w-24 h-24 object-cover rounded-md mr-4">
-                    <div>
-                        <h4 class="text-xl font-bold text-gray-800">{{ $campaign->title }}</h4>
-                        <p class="text-sm text-gray-600 mt-1">{{ $campaign->short_description }}</p>
-                        <div class="flex items-center mt-2 text-sm text-gray-500">
-                            <span>Penggalang: {{ $campaign->user->name }}</span>
-                            <span class="mx-2">•</span>
-                            <span>{{ $campaign->category->name }}</span>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Informasi Kampanye</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr>
+                                <td width="40%">Judul Kampanye</td>
+                                <td width="60%" class="font-weight-bold">{{ $campaign->title }}</td>
+                            </tr>
+                            <tr>
+                                <td>Penggalang Dana</td>
+                                <td>{{ $campaign->user->name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Target Donasi</td>
+                                <td>Rp {{ number_format($campaign->target_amount, 0, ',', '.') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Dana Terkumpul</td>
+                                <td class="text-success font-weight-bold">Rp {{ number_format($campaign->current_amount, 0, ',', '.') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Status</td>
+                                <td>
+                                    @if($campaign->status == 'active')
+                                    <span class="badge badge-success">Aktif</span>
+                                    @elseif($campaign->status == 'pending')
+                                    <span class="badge badge-warning">Menunggu</span>
+                                    @elseif($campaign->status == 'completed')
+                                    <span class="badge badge-primary">Selesai</span>
+                                    @else
+                                    <span class="badge badge-danger">Ditolak</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tanggal Mulai</td>
+                                <td>{{ $campaign->created_at->format('d M Y') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tanggal Berakhir</td>
+                                <td>{{ $campaign->end_date ? $campaign->end_date->format('d M Y') : 'Tanpa batas waktu' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <span class="text-sm font-medium text-gray-500">Target Donasi</span>
-                        <p class="text-lg font-bold text-gray-800">Rp {{ number_format($campaign->target_amount, 0, ',', '.') }}</p>
-                    </div>
-                    <div>
-                        <span class="text-sm font-medium text-gray-500">Terkumpul</span>
-                        <p class="text-lg font-bold text-blue-600">Rp {{ number_format($campaign->current_amount, 0, ',', '.') }}</p>
-                    </div>
-                    <div>
-                        <span class="text-sm font-medium text-gray-500">Tanggal Mulai</span>
-                        <p class="text-gray-800">{{ \Carbon\Carbon::parse($campaign->created_at)->format('d M Y') }}</p>
-                    </div>
-                    <div>
-                        <span class="text-sm font-medium text-gray-500">Tanggal Berakhir</span>
-                        <p class="text-gray-800">{{ $campaign->end_date ? \Carbon\Carbon::parse($campaign->end_date)->format('d M Y') : 'Tanpa batas waktu' }}</p>
-                    </div>
-                </div>
-
-                <div class="mb-6">
-                    <span class="text-sm font-medium text-gray-500">Progress</span>
-                    <div class="mt-2 relative pt-1">
-                        <div class="overflow-hidden h-4 text-xs flex rounded bg-blue-200">
-                            <div style="width: {{ min(100, round(($campaign->current_amount / $campaign->target_amount) * 100)) }}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500">
-                                {{ min(100, round(($campaign->current_amount / $campaign->target_amount) * 100)) }}%
-                            </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card card-stats card-round">
+                        <div class="card-body text-center">
+                            <h3 class="font-weight-bold">{{ $donations->count() }}</h3>
+                            <p class="text-muted">Total Donasi</p>
                         </div>
                     </div>
                 </div>
-
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="text-center p-3 bg-gray-50 rounded-lg">
-                        <p class="text-2xl font-bold text-gray-800">{{ $donations->count() }}</p>
-                        <p class="text-xs text-gray-500">Total Donasi</p>
+                <div class="col-md-4">
+                    <div class="card card-stats card-round">
+                        <div class="card-body text-center">
+                            <h3 class="font-weight-bold">{{ $donations->groupBy('donor_email')->count() }}</h3>
+                            <p class="text-muted">Jumlah Donatur</p>
+                        </div>
                     </div>
-                    <div class="text-center p-3 bg-gray-50 rounded-lg">
-                        <p class="text-2xl font-bold text-gray-800">{{ $donations->groupBy('donor_email')->count() }}</p>
-                        <p class="text-xs text-gray-500">Jumlah Donatur</p>
-                    </div>
-                    <div class="text-center p-3 bg-gray-50 rounded-lg">
-                        <p class="text-2xl font-bold text-gray-800">{{ $donations->count() > 0 ? 'Rp ' . number_format($donations->avg('amount'), 0, ',', '.') : 'Rp 0' }}</p>
-                        <p class="text-xs text-gray-500">Rata-rata Donasi</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-stats card-round">
+                        <div class="card-body text-center">
+                            <h3 class="font-weight-bold">{{ $donations->count() > 0 ? 'Rp ' . number_format($donations->avg('amount'), 0, ',', '.') : 'Rp 0' }}</h3>
+                            <p class="text-muted">Rata-rata Donasi</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Weekly Donation Chart -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <h3 class="text-lg font-semibold text-gray-700">Grafik Donasi Mingguan</h3>
-            </div>
-            <div class="p-6">
-                <div class="relative" style="height: 300px;">
-                    <canvas id="weeklyDonationChart"></canvas>
+    <!-- Weekly Donation Chart -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Grafik Donasi Mingguan</h4>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px;">
+                        <canvas id="weeklyDonationChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Donation List -->
-    <div class="bg-white rounded-lg shadow-md mb-8">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <h3 class="text-lg font-semibold text-gray-700">Daftar Donasi</h3>
-        </div>
-        <div class="w-full overflow-x-auto">
-            <table class="w-full whitespace-nowrap">
-                <thead>
-                    <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase bg-gray-50 border-b">
-                        <th class="px-4 py-3">Donatur</th>
-                        <th class="px-4 py-3">Jumlah</th>
-                        <th class="px-4 py-3">Tanggal</th>
-                        <th class="px-4 py-3">Pesan</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y">
-                    @forelse($donations as $donation)
-                    <tr class="text-gray-700 hover:bg-gray-50">
-                        <td class="px-4 py-3">
-                            <div class="flex items-center text-sm">
-                                <div>
-                                    <p class="font-semibold">{{ $donation->getDonorNameAttribute() }}</p>
-                                    <p class="text-xs text-gray-600">{{ $donation->donor_email ?? ($donation->user ? $donation->user->email : 'Email tidak tersedia') }}</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 text-sm font-semibold">
-                            Rp {{ number_format($donation->amount, 0, ',', '.') }}
-                        </td>
-                        <td class="px-4 py-3 text-sm">
-                            {{ $donation->created_at->format('d M Y, H:i') }}
-                        </td>
-                        <td class="px-4 py-3 text-sm">
-                            {{ $donation->message ?: '-' }}
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="px-4 py-3 text-center text-gray-500">
-                            Belum ada donasi untuk kampanye ini.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Daftar Donasi</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Donatur</th>
+                                    <th>Jumlah</th>
+                                    <th>Tanggal</th>
+                                    <th>Pesan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($donations as $donation)
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <p class="font-weight-bold mb-0">{{ $donation->getDonorNameAttribute() }}</p>
+                                            <small class="text-muted">{{ $donation->donor_email ?? ($donation->user ? $donation->user->email : 'Email tidak tersedia') }}</small>
+                                        </div>
+                                    </td>
+                                    <td class="font-weight-bold">
+                                        Rp {{ number_format($donation->amount, 0, ',', '.') }}
+                                    </td>
+                                    <td>
+                                        {{ $donation->created_at->format('d M Y, H:i') }}
+                                    </td>
+                                    <td>
+                                        {{ $donation->message ?: '-' }}
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">
+                                        Belum ada donasi untuk kampanye ini.
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Upload Documentation -->
-    <div class="bg-white rounded-lg shadow-md mb-8">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <h3 class="text-lg font-semibold text-gray-700">Unggah Dokumentasi</h3>
-        </div>
-        <div class="p-6">
-            <form action="{{ route('reports.upload', $campaign->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="grid gap-6 md:grid-cols-2">
-                    <div>
-                        <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Judul Dokumentasi</label>
-                        <input type="text" name="title" id="title" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
-                        @error('title')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    
-                    <div>
-                        <label for="file" class="block text-sm font-medium text-gray-700 mb-1">File</label>
-                        <input type="file" name="file" id="file" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
-                        <p class="mt-1 text-xs text-gray-500">Format: PDF, DOC, DOCX, JPG, JPEG, PNG (Max: 10MB)</p>
-                        @error('file')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    
-                    <div class="md:col-span-2">
-                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-                        <textarea name="description" id="description" rows="3" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" required></textarea>
-                        @error('description')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Unggah Dokumentasi</h4>
                 </div>
+                <div class="card-body">
+                    <form action="{{ route('dashboard.reports.upload', $campaign->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="title">Judul Dokumentasi</label>
+                                <input type="text" name="title" id="title" class="form-control" required>
+                                @error('title')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                    
+                            <div class="col-md-6 form-group">
+                                <label for="description">Deskripsi</label>
+                                <textarea name="description" id="description" rows="3" class="form-control" required></textarea>
+                                @error('description')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="file">File</label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="file" name="file" required>
+                                <label class="custom-file-label" for="file">Pilih file...</label>
+                            </div>
+                            <small class="form-text text-muted">Format: PDF, DOC, DOCX, JPG, JPEG, PNG (Max: 10MB)</small>
+                            @error('file')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
                 
-                <div class="mt-6">
-                    <button type="submit" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-md active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring">
-                        <i class="fas fa-upload mr-2"></i> Unggah Dokumentasi
-                    </button>
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload mr-1"></i> Unggah Dokumentasi
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
     <!-- Documentation List -->
-    <div class="bg-white rounded-lg shadow-md">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <h3 class="text-lg font-semibold text-gray-700">Dokumentasi Terkini</h3>
-        </div>
-        <div class="p-6">
-            <div class="text-center py-8 text-gray-500">
-                <i class="fas fa-folder-open text-5xl mb-4"></i>
-                <p class="text-lg font-medium">Belum ada dokumentasi</p>
-                <p class="text-sm">Unggah dokumentasi pertama Anda dengan menggunakan form di atas.</p>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Dokumentasi Terkini</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-folder-open fa-4x mb-3"></i>
+                        <p class="h5 mt-3">Belum ada dokumentasi</p>
+                        <p>Unggah dokumentasi pertama Anda dengan menggunakan form di atas.</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 </div>
 @endsection
 

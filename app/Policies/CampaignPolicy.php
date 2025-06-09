@@ -56,7 +56,17 @@ class CampaignPolicy
      */
     public function update(User $user, Campaign $campaign)
     {
-        // Hanya pemilik campaign yang bisa mengubah campaign
+        // Super admin (admin pertama) dapat mengubah semua campaign
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+        
+        // Admin biasa juga dapat mengubah semua campaign
+        if ($user->isAdmin()) {
+            return true;
+        }
+        
+        // Pemilik campaign dapat mengubah campaign miliknya
         return $user->id === $campaign->user_id;
     }
 
@@ -69,8 +79,17 @@ class CampaignPolicy
      */
     public function delete(User $user, Campaign $campaign)
     {
-        // Hanya pemilik campaign yang bisa menghapus campaign
-        // Tambahkan kondisi jika campaign dalam keadaan tertentu tidak boleh dihapus
+        // Super admin (admin pertama) dapat menghapus semua campaign
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+        
+        // Admin biasa dapat menghapus campaign jika tidak ada donasi
+        if ($user->isAdmin()) {
+            return $campaign->donations()->count() === 0;
+        }
+        
+        // Pemilik campaign dapat menghapus campaign miliknya jika tidak ada donasi
         return $user->id === $campaign->user_id && $campaign->donations()->count() === 0;
     }
 
@@ -83,7 +102,17 @@ class CampaignPolicy
      */
     public function restore(User $user, Campaign $campaign)
     {
-        // Jika menggunakan soft delete, tentukan siapa yang bisa mengembalikan campaign yang terhapus
+        // Super admin (admin pertama) dapat mengembalikan semua campaign
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+        
+        // Admin biasa juga dapat mengembalikan semua campaign
+        if ($user->isAdmin()) {
+            return true;
+        }
+        
+        // Pemilik campaign dapat mengembalikan campaign miliknya
         return $user->id === $campaign->user_id;
     }
 
@@ -96,8 +125,18 @@ class CampaignPolicy
      */
     public function forceDelete(User $user, Campaign $campaign)
     {
-        // Jika menggunakan soft delete, tentukan siapa yang bisa menghapus campaign secara permanen
-        return $user->id === $campaign->user_id && $user->isAdmin();
+        // Hanya super admin (admin pertama) yang dapat menghapus secara permanen
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+        
+        // Admin biasa hanya bisa menghapus secara permanen jika tidak ada donasi
+        if ($user->isAdmin()) {
+            return $campaign->donations()->count() === 0;
+        }
+        
+        // Pemilik tidak dapat menghapus secara permanen
+        return false;
     }
 
     /**

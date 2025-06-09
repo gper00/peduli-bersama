@@ -105,4 +105,3 @@ Proyek ini dibangun untuk memenuhi kebutuhan sosial dengan pendekatan berbasis t
 ## 📩 Kontak
 
 Untuk pertanyaan atau kerja sama, silakan hubungi kami melalui email: `kontak@pedulibersama.com`
-

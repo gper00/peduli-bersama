@@ -36,6 +36,9 @@
 		@include('dashboard.partials.sidebar')
 
         <div class="main-panel">
+            <!-- Hidden divs for sweet alert messages -->
+            <div class="d-none" id="success-message">{{ session('success') }}</div>
+            <div class="d-none" id="error-message">{{ session('error') }}</div>
 
             @yield('page-content')
 
@@ -141,6 +144,7 @@
 
 	{{-- Custom JS --}}
 	<script src="/assets/dashboard/js/custom.js"></script>
+	<script src="/assets/dashboard/js/sweet-alert-config.js"></script>
 
     {{-- Page specific scripts --}}
     @yield('scripts')

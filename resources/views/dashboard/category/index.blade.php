@@ -1,6 +1,7 @@
 @extends('dashboard.layout')
 
 @section('page-content')
+<div class="content">
 <div class="page-inner">
     <div class="page-header">
         <h4 class="page-title">Kelola Kategori</h4>
@@ -18,10 +19,10 @@
             </li>
         </ul>
     </div>
-    
+
     <div class="d-none" id="success-message">{{ session('success') }}</div>
     <div class="d-none" id="error-message">{{ session('error') }}</div>
-    
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -81,7 +82,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <div class="mt-4">
                         {{ $categories->links() }}
                     </div>
@@ -89,6 +90,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 @endsection
 
@@ -110,7 +112,7 @@
                 },
             });
         }
-        
+
         // Handle error message with SweetAlert if present
         var errorMessage = $('#error-message').text();
         if (errorMessage && errorMessage.trim() !== '') {
@@ -126,7 +128,7 @@
                 },
             });
         }
-        
+
         // Function to confirm deletion with SweetAlert
         window.confirmDelete = function(categoryId, categoryName) {
             swal({

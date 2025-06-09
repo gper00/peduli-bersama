@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Feedback extends Model
 {
     use HasFactory;
-    
+
     /**
      * The table associated with the model.
      *
@@ -24,6 +24,8 @@ class Feedback extends Model
      */
     protected $fillable = [
         'user_id',
+        'campaign_id',
+        'donation_id',
         'name',
         'email',
         'subject',
@@ -55,6 +57,14 @@ class Feedback extends Model
     }
     
     /**
+     * Get the campaign that the feedback belongs to.
+     */
+    public function campaign(): BelongsTo
+    {
+        return $this->belongsTo(Campaign::class);
+    }
+
+    /**
      * Get the admin who responded to the feedback.
      */
     public function responder(): BelongsTo
@@ -77,7 +87,7 @@ class Feedback extends Model
     {
         return $this->status === 'in_progress';
     }
-    
+
     /**
      * Check if the feedback has been responded to.
      */
@@ -85,7 +95,7 @@ class Feedback extends Model
     {
         return $this->status === 'responded';
     }
-    
+
     /**
      * Check if the feedback is closed.
      */
@@ -101,7 +111,7 @@ class Feedback extends Model
     {
         return $this->update(['status' => 'read']);
     }
-    
+
     /**
      * Mark the feedback as in progress.
      */
@@ -122,7 +132,7 @@ class Feedback extends Model
             'responded_at' => now(),
         ]);
     }
-    
+
     /**
      * Close the feedback.
      */
@@ -138,7 +148,7 @@ class Feedback extends Model
     {
         return $query->where('status', 'unread');
     }
-    
+
     /**
      * Scope a query to only include read feedback.
      */
@@ -146,7 +156,7 @@ class Feedback extends Model
     {
         return $query->where('status', 'read');
     }
-    
+
     /**
      * Scope a query to only include in-progress feedback.
      */
@@ -154,7 +164,7 @@ class Feedback extends Model
     {
         return $query->where('status', 'in_progress');
     }
-    
+
     /**
      * Scope a query to only include responded feedback.
      */
@@ -162,7 +172,7 @@ class Feedback extends Model
     {
         return $query->where('status', 'responded');
     }
-    
+
     /**
      * Scope a query to only include closed feedback.
      */
@@ -170,7 +180,7 @@ class Feedback extends Model
     {
         return $query->where('status', 'closed');
     }
-    
+
     /**
      * Scope a query to only include feedback with a specific priority.
      */
@@ -178,7 +188,7 @@ class Feedback extends Model
     {
         return $query->where('priority', $priority);
     }
-    
+
     /**
      * Scope a query to only include feedback with a specific type.
      */
@@ -186,7 +196,7 @@ class Feedback extends Model
     {
         return $query->where('type', $type);
     }
-    
+
     /**
      * Get the sender name (user name or guest name).
      */
@@ -195,19 +205,8 @@ class Feedback extends Model
         if ($this->user) {
             return $this->user->name;
         }
-        
+
         return $this->name ?? 'Tamu';
     }
-    
-    /**
-     * Get the sender email (user email or guest email).
-     */
-    public function getSenderEmailAttribute(): ?string
-    {
-        if ($this->user) {
-            return $this->user->email;
-        }
-        
-        return $this->email;
-    }
+
 }

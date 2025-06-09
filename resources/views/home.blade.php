@@ -4,32 +4,37 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="bg-gradient-to-r from-blue-700 to-blue-900 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+<section class="relative bg-gradient-to-r from-blue-700 to-blue-900 text-white overflow-hidden">
+    <div class="absolute inset-0 bg-grid-white/[0.05] bg-[size:16px]"></div>
+    <div class="absolute h-full w-full bg-gradient-to-t from-blue-900/50"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative">
         <div class="md:flex md:items-center md:justify-between">
             <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
-                <h1 class="text-4xl font-extrabold sm:text-5xl md:text-6xl">
-                    <span class="block">Bantu Wujudkan</span>
+                <h1 class="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+                    <span class="block mb-2">Bantu Wujudkan</span>
                     <span class="block text-blue-300">Perubahan Bersama</span>
                 </h1>
-                <p class="mt-4 text-xl text-blue-100 max-w-3xl">
-                    Peduli Bersama menghubungkan Anda dengan mereka yang membutuhkan. Mari berdonasi dan berikan dampak nyata untuk perubahan.
+                <p class="mt-6 text-lg leading-relaxed text-blue-100 max-w-2xl">
+                    Platform donasi yang terpercaya untuk membantu sesama. Bergabunglah dengan ribuan orang yang telah
+                    memberikan dampak positif bagi masyarakat.
                 </p>
-                <div class="mt-8 flex flex-col sm:flex-row sm:gap-4">
-                    <a href="{{ route('public.campaigns') }}" class="w-full sm:w-auto mb-4 sm:mb-0 flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-900 bg-white hover:bg-blue-50 md:py-4 md:text-lg md:px-10 transition duration-300">
-                        <i class="fas fa-hand-holding-heart mr-2"></i> Donasi Sekarang
+                <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                    <a href="{{ route('register') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-white text-blue-700 hover:bg-blue-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        Mulai Donasi
+                        <svg class="ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
                     </a>
-                    <a href="#how-it-works" class="w-full sm:w-auto flex items-center justify-center px-8 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-blue-800 md:py-4 md:text-lg md:px-10 transition duration-300">
-                        <i class="fas fa-info-circle mr-2"></i> Pelajari Lebih Lanjut
+                    <a href="{{ route('public.campaigns') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border-2 border-white text-white hover:bg-white hover:text-blue-700 transition-all duration-200">
+                        Lihat Kampanye
                     </a>
-                </div>
-                <div class="mt-6 flex items-center text-blue-200">
-                    <i class="fas fa-shield-alt text-2xl mr-2"></i>
-                    <p>100% aman dan transparan</p>
                 </div>
             </div>
-            <div class="md:w-1/2">
-                <img src="https://images.unsplash.com/photo-1469571486292-b53601019a8a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" alt="People helping each other" class="rounded-lg shadow-lg w-full object-cover h-96">
+            <div class="md:w-1/2 relative">
+                <img src="{{ asset('img/hero.jpg') }}" alt="Hero Image"
+                     class="rounded-2xl shadow-2xl w-full transform hover:scale-105 transition-transform duration-500 ease-out">
             </div>
         </div>
     </div>
@@ -70,7 +75,11 @@
         @foreach($featuredCampaigns as $campaign)
         <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
             <div class="relative">
-                <img src="{{ $campaign->featured_image }}" alt="{{ $campaign->title }}" class="w-full h-48 object-cover" />
+                @if($campaign->cover_image)
+                <img src="{{ asset('storage/' . $campaign->cover_image) }}" alt="{{ $campaign->title }}" class="w-full h-48 object-cover">
+                @else
+                <img src="{{ asset('storage/default/image.jpg') }}" alt="{{ $campaign->title }}" class="w-full h-48 object-cover">
+                @endif
                 @if($campaign->featured)
                 <div class="absolute top-2 left-2 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded">
                     <i class="fas fa-star mr-1"></i> Unggulan
@@ -88,13 +97,13 @@
                     <span class="mx-2">•</span>
                     <span>{{ $campaign->donor_count }} donatur</span>
                 </div>
-                
+
                 <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
                     <a href="{{ route('public.campaign', $campaign->slug) }}" class="hover:text-blue-600">{{ $campaign->title }}</a>
                 </h3>
-                
+
                 <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ $campaign->short_description }}</p>
-                
+
                 <div class="mb-4">
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: {{ ($campaign->current_amount / $campaign->target_amount) * 100 }}%"></div>
@@ -104,7 +113,7 @@
                         <span>{{ $campaign->formatted_end_date }}</span>
                     </div>
                 </div>
-                
+
                 <div class="flex justify-between items-center">
                     <div>
                         <span class="block text-gray-900 font-bold">Rp {{ number_format($campaign->current_amount, 0, ',', '.') }}</span>

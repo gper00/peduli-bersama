@@ -174,7 +174,7 @@
                 <div class="receipt-info-section">
                     <h2>Informasi Donatur</h2>
                     <p><strong>Nama:</strong> {{ $donation->getDonorNameAttribute() }}</p>
-                    <p><strong>Email:</strong> {{ $donation->donor_email }}</p>
+                    <p><strong>Email:</strong> {{ $donation->donor_email ?? ($donation->user ? $donation->user->email : 'Email tidak tersedia') }}</p>
                     @if($donation->donor_phone)
                     <p><strong>Telepon:</strong> {{ $donation->donor_phone }}</p>
                     @endif

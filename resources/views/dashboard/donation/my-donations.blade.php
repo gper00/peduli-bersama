@@ -2,7 +2,7 @@
 
 @section('title', 'Donasi Saya | Peduli Bersama')
 
-@section('content')
+@section('page-content')
 <div class="container px-6 mx-auto grid">
     <h2 class="my-6 text-2xl font-semibold text-gray-700">
         Donasi Saya
@@ -39,6 +39,8 @@
                     <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Diproses</option>
                     <option value="success" {{ request('status') == 'success' ? 'selected' : '' }}>Berhasil</option>
                     <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Gagal</option>
+                    <option value="expired" {{ request('status') == 'expired' ? 'selected' : '' }}>Kedaluwarsa</option>
+                    <option value="refunded" {{ request('status') == 'refunded' ? 'selected' : '' }}>Dikembalikan</option>
                 </select>
             </div>
             
@@ -101,12 +103,12 @@
             </div>
         </div>
     </div>
-    
+        
     @if($totalDonated > 0)
     <div class="p-4 bg-white rounded-lg shadow-md mb-8">
         <div class="flex items-center">
             <div class="p-3 rounded-full bg-blue-100 text-blue-500">
-                <i class="fas fa-donate text-xl"></i>
+                <i class="fas fa-money-bill-wave text-xl"></i>
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Total Donasi Berhasil</p>
@@ -136,8 +138,8 @@
                         <td class="px-4 py-3">
                             <div class="text-sm font-semibold">{{ $donation->invoice_number }}</div>
                         </td>
-                        <td class="px-4 py-3 text-sm">
-                            <a href="{{ route('public.campaign', $donation->campaign->slug) }}" class="text-blue-600 hover:underline" target="_blank">
+                        <td class="px-4 py-3">
+                            <a href="{{ route('public.campaign', $donation->campaign->slug) }}" class="text-blue-600 hover:text-blue-900">
                                 {{ Str::limit($donation->campaign->title, 30) }}
                             </a>
                         </td>
@@ -207,10 +209,10 @@
         
         <!-- Pagination -->
         <div class="px-4 py-3 bg-white border-t">
-            {{ $donations->links() }}
+            {{ $donations->appends(request()->except('page'))->links() }}
         </div>
     </div>
-    
+        
     <div class="mt-8 p-6 bg-blue-50 rounded-lg shadow-sm">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Mulai Berdonasi</h3>
         <p class="text-gray-600 mb-4">Anda dapat membantu lebih banyak orang dengan berdonasi ke campaign-campaign yang sedang aktif.</p>

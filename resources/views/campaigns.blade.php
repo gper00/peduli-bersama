@@ -55,13 +55,13 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-search text-gray-400"></i>
                             </div>
-                            <input type="text" name="search" id="search" value="{{ request('search') }}" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" placeholder="Cari kampanye...">
+                            <input type="text" name="q" id="search" value="{{ request('q') }}" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Cari kampanye...">
                         </div>
                     </div>
 
                     <div class="flex-1">
                         <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                        <select name="category" id="category" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                        <select name="category" id="category" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                             <option value="">Semua Kategori</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->slug }}" {{ request('category') == $category->slug ? 'selected' : '' }}>
@@ -73,19 +73,20 @@
 
                     <div class="flex-1">
                         <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Urutkan</label>
-                        <select name="sort" id="sort" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                        <select name="sort" id="sort" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                             <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Terbaru</option>
                             <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
                             <option value="most_funded" {{ request('sort') == 'most_funded' ? 'selected' : '' }}>Dana Terbanyak</option>
                             <option value="most_urgent" {{ request('sort') == 'most_urgent' ? 'selected' : '' }}>Paling Mendesak</option>
                             <option value="almost_funded" {{ request('sort') == 'almost_funded' ? 'selected' : '' }}>Hampir Mencapai Target</option>
+                            <option value="all" {{ request('sort') == 'all' ? 'selected' : '' }}>Tampilkan Semua (Termasuk Berakhir)</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
-                        <input id="only_featured" name="featured" type="checkbox" {{ request('featured') ? 'checked' : '' }} value="1" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                        <input id="only_featured" name="featured" type="checkbox" {{ request('featured') ? 'checked' : '' }} value="1" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                         <label for="only_featured" class="ml-2 block text-sm text-gray-700">Hanya Tampilkan Kampanye Unggulan</label>
                     </div>
 
@@ -124,28 +125,34 @@
                     @foreach($campaigns as $campaign)
                     <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
                         <div class="relative">
-                            @if($campaign->featured_image)
-                            <img src="{{ $campaign->featured_image }}" alt="{{ $campaign->title }}" class="w-full h-48 object-cover">
+                            @if($campaign->cover_image && Storage::disk('public')->exists($campaign->cover_image))
+                                <img src="{{ Storage::url($campaign->cover_image) }}" alt="{{ $campaign->title }}" class="w-full h-48 object-cover object-center">
                             @else
-                            <img src="{{ asset('storage/default/image.jpg') }}" alt="{{ $campaign->title }}" class="w-full h-48 object-cover">
+                                <img src="{{ asset('storage/default/campaign.jpg') }}" alt="{{ $campaign->title }}" class="w-full h-48 object-cover object-center">
                             @endif
                             @if($campaign->featured)
                             <div class="absolute top-2 left-2 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded">
                                 <i class="fas fa-star mr-1"></i> Unggulan
                             </div>
                             @endif
-                            <div class="absolute top-2 right-2 bg-white bg-opacity-90 text-gray-700 text-xs font-bold px-2 py-1 rounded-full">
-                                <i class="fas fa-calendar-alt mr-1"></i> {{ $campaign->days_remaining }} hari lagi
-                            </div>
+                            <span class="absolute top-2 right-2 bg-white bg-opacity-90 text-gray-700 text-xs font-bold px-2 py-1 rounded-full">
+                                <i class="fas fa-calendar-alt mr-1"></i> {{ $campaign->end_date && $campaign->end_date->gt(now()) ? $campaign->end_date->diffInDays(now()) : 0 }} hari lagi
+                            </span>
                         </div>
 
                         <div class="p-6">
                             <div class="flex items-center text-xs text-gray-500 mb-2">
+                                @if($campaign->category)
                                 <span class="bg-{{ $campaign->category->color ?? 'gray-100' }} text-{{ $campaign->category->color ? $campaign->category->color . '-800' : 'gray-800' }} px-2 py-1 rounded">
                                     {{ $campaign->category->name }}
                                 </span>
+                                @else
+                                <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded">
+                                    Tidak Berkategori
+                                </span>
+                                @endif
                                 <span class="mx-2">•</span>
-                                <span>{{ $campaign->donor_count }} donatur</span>
+                                <span>{{ $campaign->donor_count ?? 0 }} donatur</span>
                             </div>
 
                             <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
@@ -156,11 +163,11 @@
 
                             <div class="mb-4">
                                 <div class="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
-                                    <div style="width: {{ ($campaign->current_amount / $campaign->target_amount) * 100 }}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600"></div>
+                                    <div style="width: {{ $campaign->target_amount > 0 ? ($campaign->current_amount / $campaign->target_amount) * 100 : 0 }}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600"></div>
                                 </div>
                                 <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
-                                    <span>{{ round(($campaign->current_amount / $campaign->target_amount) * 100) }}% tercapai</span>
-                                    <span>{{ $campaign->formatted_end_date }}</span>
+                                    <span>{{ $campaign->target_amount > 0 ? round(($campaign->current_amount / $campaign->target_amount) * 100) : 0 }}% tercapai</span>
+                                    <span>{{ $campaign->end_date ? $campaign->end_date->format('d M Y') : 'Tidak ada batas' }}</span>
                                 </div>
                             </div>
 
@@ -186,11 +193,11 @@
 
         <!-- Call to Action -->
         <div class="bg-blue-50 rounded-lg shadow-md p-8 text-center">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Belum Menemukan Kampanye yang Sesuai?</h2>
-            <p class="text-gray-600 mb-6 max-w-3xl mx-auto">Anda dapat memulai kampanye sendiri untuk membantu orang-orang di sekitar Anda. Bagikan cerita Anda dan mulai mengumpulkan donasi dari orang-orang yang peduli.</p>
-            <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md shadow-sm transition duration-300 inline-flex items-center">
-                <i class="fas fa-heart mr-2"></i>
-                Mulai Galang Dana
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Ingin Menjadi Campaign Creator?</h2>
+            <p class="text-gray-600 mb-6 max-w-3xl mx-auto">Anda dapat memulai kampanye sendiri untuk membantu orang-orang di sekitar Anda. Hubungi kami untuk mendaftar sebagai campaign creator dan mulai mengumpulkan donasi untuk kegiatan sosial.</p>
+            <a href="{{ route('public.contact') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md shadow-sm transition duration-300 inline-flex items-center">
+                <i class="fas fa-paper-plane mr-2"></i>
+                Hubungi Kami
             </a>
         </div>
     </div>

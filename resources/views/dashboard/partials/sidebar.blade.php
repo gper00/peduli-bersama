@@ -20,7 +20,7 @@
             </div>
             <ul class="nav nav-primary">
                 {{-- Dashboard - Available to all roles --}}
-                <li class="nav-item {{ (isset($dashboardPage) ? 'active' : '') }}">
+                <li class="nav-item {{ request()->is('dashboard') ? 'active' : '' }}">
                     <a href="{{ route('dashboard.index') }}">
                         <i class="fas fa-home"></i>
                         <p>Dashboard</p>
@@ -37,45 +37,42 @@
                         </a>
                     </li>
 
-                    {{-- Dokumentasi & Laporan --}}
-                    <li class="nav-item {{ request()->is('dashboard/reports*') ? 'active' : '' }}">
-                        <a href="{{ route('reports.index') }}">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                            <p>Dokumentasi & Laporan</p>
-                        </a>
-                    </li>
-
-                    {{-- Komentar Publik --}}
-                    <li class="nav-item {{ request()->is('dashboard/comments*') ? 'active' : '' }}">
-                        <a href="/dashboard/comments">
-                            <i class="fas fa-comments"></i>
-                            <p>Komentar Publik</p>
-                        </a>
-                    </li>
-
-                    {{-- Tarik Dana --}}
-                    <li class="nav-item {{ request()->is('dashboard/withdrawals*') ? 'active' : '' }}">
-                        <a href="{{ route('withdrawals.index') }}">
-                            <i class="fas fa-money-check-alt"></i>
-                            <p>Tarik Dana</p>
-                        </a>
-                    </li>
-
-                    {{-- Kelola Donasi --}}
-                    <li class="nav-item {{ request()->is('dashboard/donations*') ? 'active' : '' }}">
+                    @if(auth()->user()->role == 'admin')
+                     {{-- Kelola Donasi --}}
+                     <li class="nav-item {{ request()->is('dashboard/donations*') ? 'active' : '' }}">
                         <a href="{{ route('dashboard.donations.index') }}">
                             <i class="fas fa-hand-holding-heart"></i>
                             <p>Kelola Donasi</p>
                         </a>
                     </li>
 
-                    {{-- Kritik & Saran --}}
-                    <li class="nav-item {{ request()->is('dashboard/feedback*') ? 'active' : '' }}">
-                        <a href="/dashboard/feedback">
-                            <i class="fas fa-envelope-open"></i>
-                            <p>Kritik & Saran</p>
+
+                    {{-- Komentar Publik --}}
+                    <li class="nav-item {{ request()->is('dashboard/comments*') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.comments.index') }}">
+                            <i class="fas fa-comments"></i>
+                            <p>Komentar Publik</p>
                         </a>
                     </li>
+                    @endif
+
+                    {{-- Dokumentasi & Laporan --}}
+                    <li class="nav-item {{ request()->is('dashboard/reports*') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.reports.index') }}">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <p>Dokumentasi & Laporan</p>
+                        </a>
+                    </li>
+
+                    {{-- Tarik Dana --}}
+                    <li class="nav-item {{ request()->is('dashboard/withdrawals*') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.withdrawals.index') }}">
+                            <i class="fas fa-money-check-alt"></i>
+                            <p>Tarik Dana</p>
+                        </a>
+                    </li>
+
+                    {{-- Menu Kritik & Saran dihapus karena seharusnya ditampilkan di halaman detail campaign --}}
                 @endif
 
                 {{-- ADMIN-ONLY MENU ITEMS --}}

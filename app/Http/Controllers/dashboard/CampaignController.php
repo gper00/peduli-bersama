@@ -20,7 +20,7 @@ class CampaignController extends Controller
     {
         // Admin can see all campaigns, creators can only see their own
         $query = Campaign::with(['user', 'category']);
-        
+
         if (!auth()->user()->isAdmin()) {
             // Non-admin users can only see their own campaigns
             $query->where('user_id', auth()->id());
@@ -72,9 +72,13 @@ class CampaignController extends Controller
             'status' => 'nullable|in:draft,active,completed,rejected',
         ]);
 
-        $validatedData['user_id'] = Auth::id();
+        $validatedData['user_id'] = auth()->id();
         $validatedData['slug'] = Str::slug($request->title) . '-' . Str::random(6);
-        $validatedData['status'] = $request->status ?? 'draft';
+
+        // Si el usuario es admin, la campaña se verifica automáticamente
+        if (auth()->user()->role === 'admin') {
+            $validatedData['verification_status'] = 'verified';
+        }
 
         if ($request->hasFile('cover_image')) {
             // Pastikan direktori ada
@@ -101,7 +105,7 @@ class CampaignController extends Controller
     public function show($slug)
     {
         $campaign = Campaign::where('slug', $slug)
-            ->with(['user', 'category', 'comments.user', 'updates'])
+            ->with(['user', 'category', 'comments.user', 'updates', 'donations.user'])
             ->firstOrFail();
 
         return view('dashboard.campaign.show', compact('campaign'));
@@ -203,7 +207,7 @@ class CampaignController extends Controller
             ->with('category')
             ->latest()
             ->paginate(10);
-        
+
         $categories = Category::all(); // For filter dropdown
 
         return view('dashboard.campaign.my-campaigns', compact('campaigns', 'categories'));
@@ -228,52 +232,52 @@ class CampaignController extends Controller
         return redirect()->back()
             ->with('success', 'Campaign status updated successfully!');
     }
-    
+
     /**
      * Verify a campaign.
      */
     public function verify(Request $request, $slug)
     {
         $campaign = Campaign::where('slug', $slug)->firstOrFail();
-        
+
         // Only admin can verify campaigns
         if (!auth()->user()->isAdmin()) {
             abort(403, 'Unauthorized action.');
         }
-        
+
         $validatedData = $request->validate([
             'verification_status' => 'required|in:pending,verified,rejected',
             'rejection_reason' => 'nullable|required_if:verification_status,rejected|string',
         ]);
-        
+
         $campaign->update([
             'verification_status' => $validatedData['verification_status'],
             'rejection_reason' => $validatedData['rejection_reason'] ?? null,
         ]);
-        
+
         return redirect()->back()
             ->with('success', 'Campaign verification status updated successfully!');
     }
-    
+
     /**
      * Toggle featured status of a campaign.
      */
     public function toggleFeatured($slug)
     {
         $campaign = Campaign::where('slug', $slug)->firstOrFail();
-        
+
         // Only admin can feature campaigns
         if (!auth()->user()->isAdmin()) {
             abort(403, 'Unauthorized action.');
         }
-        
+
         $campaign->update(['featured' => !$campaign->featured]);
-        
+
         $message = $campaign->featured ? 'Campaign featured successfully!' : 'Campaign unfeatured successfully!';
-        
+
         return redirect()->back()->with('success', $message);
     }
-    
+
     /**
      * Increment view count for a campaign.
      */
@@ -281,10 +285,10 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::where('slug', $slug)->firstOrFail();
         $campaign->increment('view_count');
-        
+
         return response()->json(['success' => true]);
     }
-    
+
     /**
      * Increment share count for a campaign.
      */
@@ -292,7 +296,7 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::where('slug', $slug)->firstOrFail();
         $campaign->increment('share_count');
-        
+
         return response()->json(['success' => true]);
     }
 }

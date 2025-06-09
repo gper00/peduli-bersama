@@ -44,8 +44,12 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="mb-4">
-                            <img src="/storage/{{ $campaign->cover_image ?? 'default/campaign.jpg' }}" class="img-fluid rounded" alt="{{ $campaign->title }}">
+                        <div class="mb-4" style="position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; border-radius: 0.25rem;">
+                            @if($campaign->cover_image)
+                                <img src="{{ asset('storage/' . $campaign->cover_image) }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" alt="{{ $campaign->title }}">
+                            @else
+                                <img src="{{ asset('storage/default/image.jpg') }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" alt="{{ $campaign->title }}">
+                            @endif
                         </div>
 
                         <h2>{{ $campaign->title }}</h2>
@@ -152,6 +156,71 @@
                     </div>
                 </div>
                 @endif
+
+                <!-- Feedback (Kritik & Saran) Section -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Kritik & Saran dari Donatur</h4>
+                    </div>
+                    <div class="card-body">
+                        @php
+                        $feedbacks = \App\Models\Feedback::where('campaign_id', $campaign->id)
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+                        @endphp
+
+                        @if($feedbacks->count() > 0)
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Donatur</th>
+                                            <th>Tanggal</th>
+                                            <th>Pesan</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($feedbacks as $feedback)
+                                        <tr>
+                                            <td>
+                                                <a href="{{ route('dashboard.users.show', ['user' => $feedback->user_id]) }}">
+                                                    {{ $feedback->user->name }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $feedback->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
+                                                    {{ Str::limit($feedback->message, 100) }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if($feedback->status == 'unread')
+                                                    <span class="badge badge-warning">Belum Dibaca</span>
+                                                @elseif($feedback->status == 'in_progress')
+                                                    <span class="badge badge-info">Sedang Diproses</span>
+                                                @elseif($feedback->status == 'responded')
+                                                    <span class="badge badge-success">Sudah Direspon</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('dashboard.feedbacks.show', $feedback->id) }}" class="btn btn-sm btn-primary">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="alert alert-info">
+                                <p class="mb-0">Belum ada kritik atau saran untuk kampanye ini.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-4">
@@ -164,6 +233,60 @@
                             <a href="{{ route('dashboard.campaigns.edit', $campaign->slug) }}" class="btn btn-primary mb-2">
                                 <i class="fa fa-edit"></i> Edit Campaign
                             </a>
+
+                            @if(auth()->user()->role === 'admin' && $campaign->user->role !== 'admin')
+                            <!-- Botón de verificación (solo visible para administradores) -->
+                            <div class="verification-status mb-3">
+                                <h6 class="font-weight-bold">Verification Status:</h6>
+                                @if($campaign->verification_status == 'pending')
+                                    <span class="badge badge-warning">Pending</span>
+                                    <form action="{{ route('dashboard.campaigns.verify', $campaign->slug) }}" method="POST" class="mt-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="verification_status" value="verified">
+                                        <button type="submit" class="btn btn-success btn-block btn-sm">
+                                            <i class="fa fa-check-circle"></i> Verify Campaign
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('dashboard.campaigns.verify', $campaign->slug) }}" method="POST" class="mt-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="verification_status" value="rejected">
+                                        <div class="form-group">
+                                            <textarea name="rejection_reason" class="form-control form-control-sm" rows="2" placeholder="Reason for rejection" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger btn-block btn-sm">
+                                            <i class="fa fa-times-circle"></i> Reject Campaign
+                                        </button>
+                                    </form>
+                                @elseif($campaign->verification_status == 'verified')
+                                    <span class="badge badge-success">Verified</span>
+                                    <form action="{{ route('dashboard.campaigns.verify', $campaign->slug) }}" method="POST" class="mt-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="verification_status" value="rejected">
+                                        <div class="form-group">
+                                            <textarea name="rejection_reason" class="form-control form-control-sm" rows="2" placeholder="Reason for rejection" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger btn-block btn-sm">
+                                            <i class="fa fa-times-circle"></i> Reject Campaign
+                                        </button>
+                                    </form>
+                                @elseif($campaign->verification_status == 'rejected')
+                                    <span class="badge badge-danger">Rejected</span>
+                                    <p class="text-muted small mt-1">Reason: {{ $campaign->rejection_reason ?: 'No reason provided' }}</p>
+                                    <form action="{{ route('dashboard.campaigns.verify', $campaign->slug) }}" method="POST" class="mt-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="verification_status" value="verified">
+                                        <button type="submit" class="btn btn-success btn-block btn-sm">
+                                            <i class="fa fa-check-circle"></i> Verify Campaign
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                            <div class="separator-solid mt-2 mb-3"></div>
+                            @endif
 
                             @if($campaign->status == 'draft')
                             <form action="{{ route('dashboard.campaigns.change-status', $campaign->slug) }}" method="POST" class="mb-2" id="publish-form">
@@ -185,9 +308,16 @@
                             </form>
                             @endif
 
-                            <a href="{{ url('/campaigns/'.$campaign->slug) }}" target="_blank" class="btn btn-secondary mb-2">
-                                <i class="fa fa-eye"></i> View Public Page
-                            </a>
+                            @if($campaign->verification_status == 'verified' && $campaign->status == 'active')
+                                <a href="{{ route('public.campaign', $campaign->slug) }}" target="_blank" class="btn btn-secondary mb-2">
+                                    <i class="fa fa-eye"></i> View Public Page
+                                </a>
+                            @else
+                                <button type="button" class="btn btn-secondary mb-2" disabled title="Campaign must be verified and active to be viewed publicly">
+                                    <i class="fa fa-eye"></i> Public Page Not Available
+                                </button>
+                                <small class="d-block text-muted mb-2">Campaign must be verified and active to be viewed publicly</small>
+                            @endif
 
                             <form id="delete-form" action="{{ route('dashboard.campaigns.destroy', $campaign->slug) }}" method="POST" class="mt-2">
                                 @csrf
@@ -277,12 +407,12 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar avatar-sm mr-2">
-                                                    <img src="/storage/{{ $comment->user->image ?? 'default/user.jpg' }}" alt="" class="avatar-img rounded-circle">
+                                                    <img src="/storage/{{ $comment->user ? $comment->user->image : 'default/user.jpg' }}" alt="" class="avatar-img rounded-circle">
                                                 </div>
-                                                <div>{{ $comment->user->name }}</div>
+                                                <div>{{ $comment->user ? $comment->user->name : 'Anonymous' }}</div>
                                             </div>
                                         </td>
-                                        <td>{{ Str::limit($comment->content, 30) }}</td>
+                                        <td>{{ Str::limit($comment->comment, 30) }}</td>
                                         <td>{{ $comment->created_at->diffForHumans() }}</td>
                                     </tr>
                                     @empty
@@ -320,7 +450,7 @@
                 },
             });
         }
-        
+
         // Handle error messages with SweetAlert
         var errorMessage = $('#error-message').text();
         if (errorMessage && errorMessage.trim() !== '') {
@@ -336,12 +466,12 @@
                 },
             });
         }
-        
+
         // SweetAlert for delete button
         $('#delete-campaign-btn').on('click', function(e) {
             e.preventDefault();
             const deleteForm = document.getElementById('delete-form');
-            
+
             swal({
                 title: "Apakah Anda yakin?",
                 text: "Anda akan menghapus campaign ini. Tindakan ini tidak dapat dibatalkan!",
@@ -363,12 +493,12 @@
                 }
             });
         });
-        
+
         // SweetAlert for publish campaign button
         $('#publish-btn').on('click', function(e) {
             e.preventDefault();
             const publishForm = document.getElementById('publish-form');
-            
+
             swal({
                 title: "Publish Campaign?",
                 text: "Campaign akan dipublikasikan dan terlihat oleh publik.",
@@ -390,12 +520,12 @@
                 }
             });
         });
-        
+
         // SweetAlert for mark as completed button
         $('#complete-btn').on('click', function(e) {
             e.preventDefault();
             const completeForm = document.getElementById('complete-form');
-            
+
             swal({
                 title: "Tandai sebagai Selesai?",
                 text: "Campaign akan ditandai sebagai selesai dan tidak akan menerima donasi baru.",

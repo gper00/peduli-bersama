@@ -27,14 +27,22 @@ use App\Http\Controllers\dashboard\DonationController;
 
 // Public routes
 Route::get('/', [App\Http\Controllers\PublicController::class, 'index'])->name('home');
+Route::get('/home', function() {return redirect('/');});
 Route::get('/campaigns', [App\Http\Controllers\PublicController::class, 'campaigns'])->name('public.campaigns');
 Route::get('/campaigns/{slug}', [App\Http\Controllers\PublicController::class, 'campaignDetail'])->name('public.campaign');
 // Route::get('/categories/{slug}', [App\Http\Controllers\PublicController::class, 'campaignsByCategory'])->name('public.category');
-Route::get('/about', [App\Http\Controllers\PublicController::class, 'about']);
-Route::get('/contact', [App\Http\Controllers\PublicController::class, 'contact']);
+Route::get('/about', [App\Http\Controllers\PublicController::class, 'about'])->name('public.about');
+Route::get('/contact', [App\Http\Controllers\PublicController::class, 'contact'])->name('public.contact');
+
+// Static pages
+Route::get('/terms', [App\Http\Controllers\StaticPageController::class, 'terms'])->name('terms');
+Route::get('/privacy', [App\Http\Controllers\StaticPageController::class, 'privacy'])->name('privacy');
 
 // Messages routes
 Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+
+// Comments routes
+Route::post('/campaigns/{slug}/comments', [CommentController::class, 'store'])->name('comments.store');
 
 // Public routes for donation process
 Route::get('/donate/{slug}', [App\Http\Controllers\PublicController::class, 'donateForm'])->name('public.donate');
@@ -46,6 +54,10 @@ Route::post('/payment/callback', [App\Http\Controllers\PublicController::class, 
 // Payment success and failed pages
 Route::get('/payment/success/{invoice}', [App\Http\Controllers\PublicController::class, 'paymentSuccess'])->name('public.paymentSuccess');
 Route::get('/payment/failed/{invoice}', [App\Http\Controllers\PublicController::class, 'paymentFailed'])->name('public.paymentFailed');
+
+// Donation feedback routes
+Route::get('/donation/{invoice}/feedback', [App\Http\Controllers\DonationFeedbackController::class, 'showForm'])->name('donation.feedback');
+Route::post('/donation/{donationId}/feedback', [App\Http\Controllers\DonationFeedbackController::class, 'store'])->name('donation.feedback.store');
 
 // Authentication routes
 Route::get('/login', [AuthController::class, 'index'])->name('login')->middleware('guest');
@@ -103,42 +115,53 @@ Route::middleware(['auth'])->prefix('dashboard')->name('dashboard.')->group(func
     // Admin only donation routes
     Route::middleware(['admin'])->group(function () {
         Route::patch('/donations/{id}/status', [DonationController::class, 'updateStatus'])->name('donations.updateStatus');
-        
+
         // Messages management - admin only
         Route::resource('messages', MessageController::class, [
             'only' => ['index', 'show']
         ]);
         Route::post('/messages/{message}/toggle-read', [MessageController::class, 'toggleRead'])->name('messages.toggle-read');
         Route::get('/messages/unread-count', [MessageController::class, 'getUnreadCount'])->name('messages.unread-count');
-        
+
         // Comments management - admin only
         Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
         Route::patch('/comments/{comment}/status', [CommentController::class, 'updateStatus'])->name('comments.update-status');
         Route::patch('/comments/{comment}/pin', [CommentController::class, 'togglePin'])->name('comments.toggle-pin');
         Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     });
-    
+
     // Reports & Documentation routes - for admin and creator
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/reports', [App\Http\Controllers\dashboard\ReportController::class, 'index'])->name('reports.index');
-        Route::get('/reports/campaign/{id}', [App\Http\Controllers\dashboard\ReportController::class, 'campaignReport'])->name('reports.campaign');
-        Route::post('/reports/campaign/{id}/upload', [App\Http\Controllers\dashboard\ReportController::class, 'uploadDocumentation'])->name('reports.upload');
-        Route::get('/reports/template/{type}', [App\Http\Controllers\dashboard\ReportController::class, 'downloadTemplate'])->name('reports.template');
-    });
-    
+    Route::get('/reports', [App\Http\Controllers\dashboard\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/campaign/{id}', [App\Http\Controllers\dashboard\ReportController::class, 'campaignReport'])->name('reports.campaign');
+    Route::post('/reports/campaign/{id}/upload', [App\Http\Controllers\dashboard\ReportController::class, 'uploadDocumentation'])->name('reports.upload');
+    Route::get('/reports/template/{type}', [App\Http\Controllers\dashboard\ReportController::class, 'downloadTemplate'])->name('reports.template');
+
+    // Feedback routes - for admin and creator
+    Route::get('/feedbacks', [App\Http\Controllers\dashboard\FeedbackController::class, 'index'])->name('feedbacks.index');
+    Route::get('/feedbacks/{id}', [App\Http\Controllers\dashboard\FeedbackController::class, 'show'])->name('feedbacks.show');
+    Route::patch('/feedbacks/{id}/status', [App\Http\Controllers\dashboard\FeedbackController::class, 'updateStatus'])->name('feedbacks.updateStatus');
+    Route::post('/feedbacks/{id}/respond', [App\Http\Controllers\dashboard\FeedbackController::class, 'respond'])->name('feedbacks.respond');
+    Route::post('/feedbacks/{id}/notes', [App\Http\Controllers\dashboard\FeedbackController::class, 'addNotes'])->name('feedbacks.addNotes');
+
     // Withdrawal routes - for admin and creator
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/withdrawals', [App\Http\Controllers\dashboard\WithdrawalController::class, 'index'])->name('withdrawals.index');
-        Route::get('/withdrawals/create', [App\Http\Controllers\dashboard\WithdrawalController::class, 'create'])->name('withdrawals.create');
-        Route::post('/withdrawals', [App\Http\Controllers\dashboard\WithdrawalController::class, 'store'])->name('withdrawals.store');
-        Route::get('/withdrawals/{id}', [App\Http\Controllers\dashboard\WithdrawalController::class, 'show'])->name('withdrawals.show');
-        Route::patch('/withdrawals/{id}/status', [App\Http\Controllers\dashboard\WithdrawalController::class, 'updateStatus'])->name('withdrawals.update-status');
-    });
+    Route::get('/withdrawals', [App\Http\Controllers\dashboard\WithdrawalController::class, 'index'])->name('withdrawals.index');
+    Route::get('/withdrawals/create', [App\Http\Controllers\dashboard\WithdrawalController::class, 'create'])->name('withdrawals.create');
+    Route::post('/withdrawals', [App\Http\Controllers\dashboard\WithdrawalController::class, 'store'])->name('withdrawals.store');
+    Route::get('/withdrawals/{id}', [App\Http\Controllers\dashboard\WithdrawalController::class, 'show'])->name('withdrawals.show');
+    Route::patch('/withdrawals/{id}/status', [App\Http\Controllers\dashboard\WithdrawalController::class, 'updateStatus'])->name('withdrawals.updateStatus');
+
+    // Notification routes
+    Route::get('notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('notifications/unread-count', [\App\Http\Controllers\NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
+    Route::get('notifications/latest', [\App\Http\Controllers\NotificationController::class, 'getLatest'])->name('notifications.latest');
+    Route::post('notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
+    Route::post('notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
 
     // Profile routes - accessible by all authenticated users for managing their own profile
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
 
     // User management routes - accessible only by admin
     Route::middleware(['admin'])->group(function () {

@@ -2,249 +2,314 @@
 
 @section('title', 'Dokumentasi & Laporan | Peduli Bersama')
 
-@section('content')
-<div class="container px-6 mx-auto grid">
-    <h2 class="my-6 text-2xl font-semibold text-gray-700">
-        Dokumentasi & Laporan
-    </h2>
+<!-- Custom styles for this page -->
+@include('dashboard.report.styles')
 
-    <!-- Notification Messages -->
-    @if(session('success'))
-    <div class="mb-6 px-4 py-3 bg-green-50 text-green-800 rounded-lg shadow-md">
-        <div class="flex items-center">
-            <i class="fas fa-check-circle mr-2"></i>
-            <span>{{ session('success') }}</span>
+@section('page-content')
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Dokumentasi & Laporan</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="{{ route('dashboard.index') }}">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('dashboard.reports.index') }}">Dokumentasi & Laporan</a>
+                </li>
+            </ul>
         </div>
-    </div>
-    @endif
 
-    @if(session('error'))
-    <div class="mb-6 px-4 py-3 bg-red-50 text-red-800 rounded-lg shadow-md">
-        <div class="flex items-center">
-            <i class="fas fa-exclamation-circle mr-2"></i>
-            <span>{{ session('error') }}</span>
+        <!-- Notification Messages -->
+        @if(session('success'))
+        <div class="alert alert-success" role="alert">
+            <i class="fa fa-check-circle mr-2"></i> {{ session('success') }}
         </div>
-    </div>
-    @endif
+        @endif
+
+        @if(session('error'))
+        <div class="alert alert-danger" role="alert">
+            <i class="fa fa-exclamation-circle mr-2"></i> {{ session('error') }}
+        </div>
+        @endif
 
     <!-- Statistics Cards -->
-    <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
-        <!-- Total Campaigns -->
-        <div class="flex items-center p-4 bg-white rounded-lg shadow-md">
-            <div class="p-3 mr-4 text-orange-500 bg-orange-100 rounded-full">
-                <i class="fas fa-bullhorn"></i>
-            </div>
-            <div>
-                <p class="mb-2 text-sm font-medium text-gray-600">
-                    Total Kampanye
-                </p>
-                <p class="text-lg font-semibold text-gray-700">
-                    {{ $campaigns->count() }}
-                </p>
-            </div>
-        </div>
-        
-        <!-- Total Donasi -->
-        <div class="flex items-center p-4 bg-white rounded-lg shadow-md">
-            <div class="p-3 mr-4 text-green-500 bg-green-100 rounded-full">
-                <i class="fas fa-money-bill-wave"></i>
-            </div>
-            <div>
-                <p class="mb-2 text-sm font-medium text-gray-600">
-                    Total Donasi
-                </p>
-                <p class="text-lg font-semibold text-gray-700">
-                    Rp {{ number_format($totalDonations, 0, ',', '.') }}
-                </p>
+    <div class="row mb-4">
+        <!-- Total Campaigns Card -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card card-stats">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="icon-big text-center icon-primary">
+                                <i class="fa fa-bullhorn"></i>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center">
+                            <div class="numbers">
+                                <p class="card-category">Total Kampanye</p>
+                                <h4 class="card-title">{{ $campaigns->count() }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <!-- Total Donors -->
-        <div class="flex items-center p-4 bg-white rounded-lg shadow-md">
-            <div class="p-3 mr-4 text-blue-500 bg-blue-100 rounded-full">
-                <i class="fas fa-users"></i>
-            </div>
-            <div>
-                <p class="mb-2 text-sm font-medium text-gray-600">
-                    Total Donatur
-                </p>
-                <p class="text-lg font-semibold text-gray-700">
-                    {{ $totalDonors }}
-                </p>
+
+        <!-- Total Donations Card -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card card-stats">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="icon-big text-center icon-success">
+                                <i class="fa fa-money-bill-wave"></i>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center">
+                            <div class="numbers">
+                                <p class="card-category">Total Donasi</p>
+                                <h4 class="card-title">Rp {{ number_format($totalDonations, 0, ',', '.') }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <!-- Average Donation -->
-        <div class="flex items-center p-4 bg-white rounded-lg shadow-md">
-            <div class="p-3 mr-4 text-teal-500 bg-teal-100 rounded-full">
-                <i class="fas fa-chart-line"></i>
+
+        <!-- Total Donors Card -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card card-stats">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="icon-big text-center icon-warning">
+                                <i class="fa fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center">
+                            <div class="numbers">
+                                <p class="card-category">Total Donatur</p>
+                                <h4 class="card-title">{{ $totalDonors }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div>
-                <p class="mb-2 text-sm font-medium text-gray-600">
-                    Rata-rata Donasi
-                </p>
-                <p class="text-lg font-semibold text-gray-700">
-                    Rp {{ $totalDonors > 0 ? number_format($totalDonations / $totalDonors, 0, ',', '.') : 0 }}
-                </p>
+        </div>
+
+        <!-- Average Donation Card -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card card-stats">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="icon-big text-center icon-danger">
+                                <i class="fa fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center">
+                            <div class="numbers">
+                                <p class="card-category">Rata-rata Donasi</p>
+                                <h4 class="card-title">Rp {{ $totalDonors > 0 ? number_format($totalDonations / $totalDonors, 0, ',', '.') : 0 }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Monthly Donation Chart -->
-    <div class="p-4 bg-white rounded-lg shadow-md mb-8">
-        <h3 class="text-lg font-semibold text-gray-700 mb-4">Grafik Donasi Bulanan</h3>
-        <div class="relative" style="height: 300px;">
-            <canvas id="monthlyDonationChart"></canvas>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Grafik Donasi Bulanan</h4>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px;">
+                        <canvas id="monthlyDonationChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Campaign Reports -->
-    <div class="bg-white rounded-lg shadow-md mb-8">
-        <div class="p-4 border-b border-gray-200 bg-gray-50">
-            <h3 class="text-lg font-semibold text-gray-700">Laporan Per Kampanye</h3>
-        </div>
-        <div class="p-4">
-            <div class="overflow-x-auto">
-                <table class="w-full whitespace-nowrap">
-                    <thead>
-                        <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">
-                            <th class="px-4 py-3">Kampanye</th>
-                            <th class="px-4 py-3">Target</th>
-                            <th class="px-4 py-3">Terkumpul</th>
-                            <th class="px-4 py-3">Progress</th>
-                            <th class="px-4 py-3">Donatur</th>
-                            <th class="px-4 py-3">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y">
-                        @forelse($campaignStats as $stat)
-                        <tr class="text-gray-700 hover:bg-gray-50">
-                            <td class="px-4 py-3">
-                                <div class="flex items-center text-sm">
-                                    <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                        <img class="object-cover w-full h-full rounded-full" src="{{ $stat['campaign']->featured_image ?: asset('images/default-campaign.jpg') }}" alt="{{ $stat['campaign']->title }}">
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">{{ Str::limit($stat['campaign']->title, 30) }}</p>
-                                        <p class="text-xs text-gray-600">{{ $stat['campaign']->end_date ? 'Berakhir: ' . \Carbon\Carbon::parse($stat['campaign']->end_date)->format('d M Y') : 'Tanpa batas waktu' }}</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 text-sm">
-                                Rp {{ number_format($stat['campaign']->target_amount, 0, ',', '.') }}
-                            </td>
-                            <td class="px-4 py-3 text-sm">
-                                Rp {{ number_format($stat['donations'], 0, ',', '.') }}
-                            </td>
-                            <td class="px-4 py-3 text-sm">
-                                <div class="relative pt-1">
-                                    <div class="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
-                                        <div style="width: {{ min(100, round($stat['progress'])) }}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"></div>
-                                    </div>
-                                    <div class="text-right mt-1 text-xs font-semibold text-gray-600">{{ round($stat['progress']) }}%</div>
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 text-sm">
-                                {{ $stat['donors'] }}
-                            </td>
-                            <td class="px-4 py-3 text-sm">
-                                <div class="flex space-x-2">
-                                    <a href="{{ route('reports.campaign', $stat['campaign']->id) }}" class="px-2 py-1 text-xs font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-md active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring">
-                                        <i class="fas fa-chart-bar mr-1"></i> Detail
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="px-4 py-3 text-center text-gray-500">
-                                Tidak ada data kampanye yang tersedia.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Laporan Per Kampanye</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Kampanye</th>
+                                    <th>Target</th>
+                                    <th>Terkumpul</th>
+                                    <th>Progress</th>
+                                    <th>Donatur</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($campaignStats as $stat)
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="mr-3">
+                                                <img class="rounded-circle" width="40" height="40" src="{{ $stat['campaign']->featured_image ?: asset('images/default-campaign.jpg') }}" alt="{{ $stat['campaign']->title }}">
+                                            </div>
+                                            <div>
+                                                <p class="font-weight-bold mb-0">{{ Str::limit($stat['campaign']->title, 30) }}</p>
+                                                <small class="text-muted">{{ $stat['campaign']->end_date ? 'Berakhir: ' . \Carbon\Carbon::parse($stat['campaign']->end_date)->format('d M Y') : 'Tanpa batas waktu' }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        Rp {{ number_format($stat['campaign']->target_amount, 0, ',', '.') }}
+                                    </td>
+                                    <td>
+                                        Rp {{ number_format($stat['donations'], 0, ',', '.') }}
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ min(100, round($stat['progress'])) }}%" aria-valuenow="{{ round($stat['progress']) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <small class="text-muted text-right d-block">{{ round($stat['progress']) }}%</small>
+                                    </td>
+                                    <td>
+                                        {{ $stat['donors'] }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('dashboard.reports.campaign', $stat['campaign']->id) }}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-chart-bar mr-1"></i> Detail
+                                        </a>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">
+                                        Tidak ada data kampanye yang tersedia.
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Documentation Templates -->
-    <div class="grid gap-6 mb-8 md:grid-cols-2">
-        <div class="bg-white rounded-lg shadow-md">
-            <div class="p-4 border-b border-gray-200 bg-gray-50">
-                <h3 class="text-lg font-semibold text-gray-700">Template Laporan</h3>
-            </div>
-            <div class="p-4">
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <div>
-                            <p class="font-medium text-gray-700">Laporan Keuangan Bulanan</p>
-                            <p class="text-sm text-gray-600">Template Excel untuk laporan keuangan campaign</p>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Template Laporan</h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Laporan Keuangan Bulanan</h6>
+                                    <small class="text-muted">Template Excel untuk laporan keuangan campaign</small>
+                                </div>
+                                <a href="{{ route('dashboard.reports.template', 'financial') }}" class="btn btn-outline-primary btn-sm btn-download-template" data-template-name="Laporan Keuangan Bulanan">
+                                    <i class="fas fa-download mr-1"></i> Unduh
+                                </a>
+                            </div>
                         </div>
-                        <a href="{{ route('reports.template', 'financial') }}" class="px-3 py-1 text-xs font-medium text-blue-600 border border-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition-colors">
-                            <i class="fas fa-download mr-1"></i> Unduh
-                        </a>
-                    </div>
-                    
-                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <div>
-                            <p class="font-medium text-gray-700">Laporan Aktivitas Campaign</p>
-                            <p class="text-sm text-gray-600">Template Word untuk laporan aktivitas campaign</p>
+                        
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Laporan Aktivitas Campaign</h6>
+                                    <small class="text-muted">Template Word untuk laporan aktivitas campaign</small>
+                                </div>
+                                <a href="{{ route('dashboard.reports.template', 'activity') }}" class="btn btn-outline-primary btn-sm btn-download-template" data-template-name="Laporan Aktivitas Campaign">
+                                    <i class="fas fa-download mr-1"></i> Unduh
+                                </a>
+                            </div>
                         </div>
-                        <a href="{{ route('reports.template', 'activity') }}" class="px-3 py-1 text-xs font-medium text-blue-600 border border-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition-colors">
-                            <i class="fas fa-download mr-1"></i> Unduh
-                        </a>
-                    </div>
-                    
-                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <div>
-                            <p class="font-medium text-gray-700">Surat Penggunaan Dana</p>
-                            <p class="text-sm text-gray-600">Template PDF untuk surat penggunaan dana</p>
+                        
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Surat Penggunaan Dana</h6>
+                                    <small class="text-muted">Template PDF untuk surat penggunaan dana</small>
+                                </div>
+                                <a href="{{ route('dashboard.reports.template', 'letter') }}" class="btn btn-outline-primary btn-sm btn-download-template" data-template-name="Surat Penggunaan Dana">
+                                    <i class="fas fa-download mr-1"></i> Unduh
+                                </a>
+                            </div>
                         </div>
-                        <a href="{{ route('reports.template', 'letter') }}" class="px-3 py-1 text-xs font-medium text-blue-600 border border-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition-colors">
-                            <i class="fas fa-download mr-1"></i> Unduh
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="bg-white rounded-lg shadow-md">
-            <div class="p-4 border-b border-gray-200 bg-gray-50">
-                <h3 class="text-lg font-semibold text-gray-700">Panduan & Bantuan</h3>
-            </div>
-            <div class="p-4">
-                <div class="space-y-4">
-                    <div class="flex items-start p-3 bg-gray-50 rounded-lg">
-                        <div class="flex-shrink-0 p-2 bg-blue-100 text-blue-500 rounded-full mr-3">
-                            <i class="fas fa-book"></i>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Panduan & Bantuan</h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <div class="d-flex">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-primary">
+                                        <i class="fas fa-book text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Panduan Pembuatan Laporan</h6>
+                                    <p class="text-muted mb-1">Panduan langkah-demi-langkah untuk membuat laporan yang efektif</p>
+                                    <a href="#" class="btn btn-link btn-sm p-0">Baca selengkapnya</a>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <p class="font-medium text-gray-700">Panduan Pembuatan Laporan</p>
-                            <p class="text-sm text-gray-600 mb-2">Panduan langkah-demi-langkah untuk membuat laporan yang efektif</p>
-                            <a href="#" class="text-xs text-blue-600 hover:underline">Baca selengkapnya</a>
+                        
+                        <div class="list-group-item">
+                            <div class="d-flex">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-success">
+                                        <i class="fas fa-video text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Video Tutorial</h6>
+                                    <p class="text-muted mb-1">Video tutorial untuk membuat dokumentasi campaign</p>
+                                    <a href="#" class="btn btn-link btn-sm p-0">Tonton video</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="flex items-start p-3 bg-gray-50 rounded-lg">
-                        <div class="flex-shrink-0 p-2 bg-green-100 text-green-500 rounded-full mr-3">
-                            <i class="fas fa-video"></i>
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-700">Video Tutorial</p>
-                            <p class="text-sm text-gray-600 mb-2">Video tutorial untuk membuat dokumentasi campaign</p>
-                            <a href="#" class="text-xs text-blue-600 hover:underline">Tonton video</a>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-start p-3 bg-gray-50 rounded-lg">
-                        <div class="flex-shrink-0 p-2 bg-purple-100 text-purple-500 rounded-full mr-3">
-                            <i class="fas fa-question-circle"></i>
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-700">FAQ</p>
-                            <p class="text-sm text-gray-600 mb-2">Pertanyaan yang sering diajukan tentang pelaporan</p>
-                            <a href="#" class="text-xs text-blue-600 hover:underline">Lihat FAQ</a>
+                        
+                        <div class="list-group-item">
+                            <div class="d-flex">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-info">
+                                        <i class="fas fa-question-circle text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">FAQ</h6>
+                                    <p class="text-muted mb-1">Pertanyaan yang sering diajukan tentang pelaporan</p>
+                                    <a href="#" class="btn btn-link btn-sm p-0">Lihat FAQ</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -256,6 +321,8 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<!-- Custom scripts for this page -->
+@include('dashboard.report.scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Monthly Donation Chart

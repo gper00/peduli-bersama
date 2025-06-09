@@ -72,8 +72,9 @@ class Donation extends Model
             return 'Anonim';
         }
 
-        if ($this->donor_name) {
-            return $this->donor_name;
+        // Menggunakan property_exists dan isset untuk defensive programming
+        if (property_exists($this, 'donor_name') && isset($this->attributes['donor_name']) && !empty($this->attributes['donor_name'])) {
+            return $this->attributes['donor_name'];
         }
         
         return $this->user ? $this->user->name : 'Donatur';

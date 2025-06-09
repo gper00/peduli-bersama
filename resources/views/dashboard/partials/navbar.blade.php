@@ -254,7 +254,7 @@
                             </li>
                             <li>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{{ route('dashboard.profile.index') }}">My Profile</a>
+                                <a class="dropdown-item" href="{{ route('dashboard.profile.index') }}">Profil Saya</a>
                                 <div class="dropdown-divider"></div>
 
                                 <form action="/logout" method="post">

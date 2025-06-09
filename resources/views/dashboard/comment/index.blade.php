@@ -1,6 +1,7 @@
 @extends('dashboard.layout')
 
 @section('page-content')
+<div class="content">
 @if(auth()->user()->role !== 'admin')
 <div class="page-inner">
     <div class="alert alert-danger">
@@ -128,7 +129,7 @@
                                 <tr class="{{ $comment->status == 'pending' ? 'table-warning' : ($comment->status == 'spam' ? 'table-danger' : ($comment->status == 'deleted' ? 'table-secondary' : '')) }}">
                                     <td>{{ $index + 1 }}</td>
                                     <td>
-                                        <a href="{{ route('dashboard.users.show', $comment->user_id) }}">
+                                        <a href="{{ route('dashboard.users.show', ['user' => $comment->user_id]) }}">
                                             {{ $comment->user->name }}
                                         </a>
                                     </td>
@@ -165,7 +166,7 @@
                                             <button type="button" class="btn btn-link btn-primary btn-lg" data-toggle="modal" data-target="#commentModal{{ $comment->id }}">
                                                 <i class="fa fa-eye"></i>
                                             </button>
-                                            
+
                                             <form action="{{ route('dashboard.comments.toggle-pin', $comment->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PATCH')
@@ -173,7 +174,7 @@
                                                     <i class="fa fa-thumbtack"></i>
                                                 </button>
                                             </form>
-                                            
+
                                             <div class="dropdown d-inline">
                                                 <button class="btn btn-link btn-info btn-lg" data-toggle="dropdown">
                                                     <i class="fa fa-edit"></i>
@@ -205,7 +206,7 @@
                                                     </form>
                                                 </div>
                                             </div>
-                                            
+
                                             <form action="{{ route('dashboard.comments.destroy', $comment->id) }}" method="POST" class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')
@@ -214,7 +215,7 @@
                                                 </button>
                                             </form>
                                         </div>
-                                        
+
                                         <!-- Comment Detail Modal -->
                                         <div class="modal fade" id="commentModal{{ $comment->id }}" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel{{ $comment->id }}" aria-hidden="true">
                                             <div class="modal-dialog modal-lg" role="document">
@@ -244,7 +245,7 @@
                                                         </div>
                                                         <div class="row mb-3">
                                                             <div class="col-md-6">
-                                                                <strong>Status:</strong> 
+                                                                <strong>Status:</strong>
                                                                 @if($comment->status == 'published')
                                                                     <span class="badge badge-success">Dipublikasikan</span>
                                                                 @elseif($comment->status == 'pending')
@@ -331,29 +332,12 @@
     </div>
 </div>
 @endif
+</div>
 @endsection
 
 @section('scripts')
 <script>
     $(document).ready(function() {
-        $('#basic-datatables').DataTable({
-            "ordering": false,
-            "pageLength": 10,
-            "language": {
-                "lengthMenu": "Tampilkan _MENU_ data per halaman",
-                "zeroRecords": "Data tidak ditemukan",
-                "info": "Menampilkan halaman _PAGE_ dari _PAGES_",
-                "infoEmpty": "Tidak ada data yang tersedia",
-                "infoFiltered": "(difilter dari _MAX_ total data)",
-                "search": "Cari:",
-                "paginate": {
-                    "first": "Pertama",
-                    "last": "Terakhir",
-                    "next": "Selanjutnya",
-                    "previous": "Sebelumnya"
-                }
-            }
-        });
 
         // Sweet Alert untuk notifikasi
         const successMessage = $('#success-message').text();
@@ -385,7 +369,7 @@
         $('.delete-form').on('submit', function(e) {
             e.preventDefault();
             const form = this;
-            
+
             swal({
                 title: "Apakah Anda yakin?",
                 text: "Komentar akan dihapus secara permanen dan tidak dapat dikembalikan!",
