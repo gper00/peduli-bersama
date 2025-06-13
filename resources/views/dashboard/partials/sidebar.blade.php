@@ -43,6 +43,12 @@
                         <a href="{{ route('dashboard.donations.index') }}">
                             <i class="fas fa-hand-holding-heart"></i>
                             <p>Kelola Donasi</p>
+                            @php
+                                $pendingDonationsCount = \App\Models\Donation::whereIn('status', ['pending', 'processing'])->count();
+                            @endphp
+                            @if($pendingDonationsCount > 0)
+                                <span class="badge badge-danger">{{ $pendingDonationsCount }}</span>
+                            @endif
                         </a>
                     </li>
 
@@ -52,6 +58,12 @@
                         <a href="{{ route('dashboard.comments.index') }}">
                             <i class="fas fa-comments"></i>
                             <p>Komentar Publik</p>
+                            @php
+                                $pendingCommentsCount = \App\Models\Comment::where('status', 'pending')->count();
+                            @endphp
+                            @if($pendingCommentsCount > 0)
+                                <span class="badge badge-danger">{{ $pendingCommentsCount }}</span>
+                            @endif
                         </a>
                     </li>
                     @endif
@@ -105,7 +117,7 @@
                     <li class="nav-item {{ request()->is('dashboard/messages*') ? 'active' : '' }}">
                         <a href="{{ route('dashboard.messages.index') }}">
                             <i class="fas fa-envelope"></i>
-                            <p>Kelola Pesan Masuk</p>
+                            <p>Pesan Masuk</p>
                             @php
                                 $unreadMessagesCount = \App\Models\Message::unread()->count();
                             @endphp
@@ -116,18 +128,18 @@
                     </li>
 
                     {{-- Pengaturan Konten --}}
-                    <li class="nav-item {{ request()->is('dashboard/general*') ? 'active' : '' }}">
+                    {{-- <li class="nav-item {{ request()->is('dashboard/general*') ? 'active' : '' }}">
                         <a href="/dashboard/general">
                             <i class="fas fa-cog"></i>
                             <p>Pengaturan Konten</p>
                         </a>
-                    </li>
+                    </li> --}}
                 @endif
 
                 {{-- DONOR-ONLY MENU ITEMS --}}
                 @if(auth()->user()->role == 'donor')
                     {{-- Riwayat Donasi --}}
-                    <li class="nav-item {{ request()->is('dashboard/donations*') ? 'active' : '' }}">
+                    <li class="nav-item {{ request()->is('dashboard/my-donations*') ? 'active' : '' }}">
                         <a href="{{ route('dashboard.donations.my') }}">
                             <i class="fas fa-history"></i>
                             <p>Riwayat Donasi</p>

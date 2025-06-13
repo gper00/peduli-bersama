@@ -1,14 +1,15 @@
 @extends('layouts.app')
+@php($hasHero = false) @endphp
 
 @section('title', 'Masuk | Peduli Bersama')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 pt-28">
     <div class="max-w-md w-full space-y-8">
         <div>
             <div class="flex justify-center">
                 <div class="flex items-center text-blue-500">
-                    <i class="fas fa-heart text-4xl mr-2"></i>
+                    {{-- <i class="fas fa-heart text-4xl mr-2"></i> --}}
                     <span class="text-2xl font-bold">Peduli Bersama</span>
                 </div>
             </div>
@@ -34,11 +35,11 @@
 
         <form class="mt-8 space-y-6" action="{{ route('login') }}" method="POST">
             @csrf
-            
+
             @if(request()->has('redirect'))
             <input type="hidden" name="redirect" value="{{ request()->get('redirect') }}">
             @endif
-            
+
             <div class="rounded-md shadow-sm space-y-4">
                 <div>
                     <label for="usernameOrEmail" class="sr-only">Username atau Email</label>

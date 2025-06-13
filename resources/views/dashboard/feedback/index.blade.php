@@ -185,9 +185,9 @@
                                             <a href="{{ route('dashboard.feedbacks.show', $feedback->id) }}" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-eye"></i>
                                             </a>
-                                            
+
                                             @if($feedback->status != 'closed')
-                                            <form action="{{ route('dashboard.feedbacks.updateStatus', $feedback->id) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('dashboard.feedbacks.updateStatus', $feedback->id) }}" method="POST" class="d-inline close-feedback-form">
                                                 @csrf
                                                 @method('PATCH')
                                                 <input type="hidden" name="status" value="closed">
@@ -206,7 +206,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <!-- Pagination -->
                         <div class="mt-4 d-flex justify-content-center">
                             {{ $feedbacks->appends(request()->except('page'))->links() }}
@@ -217,4 +217,21 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        // Konfirmasi tutup feedback
+        $('.close-feedback-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+
+            confirmComplete("Anda akan menutup kritik & saran ini. Tindakan ini tidak dapat dibatalkan!")
+                .then((willClose) => {
+                    if (willClose) {
+                        form.submit();
+                    }
+                });
+        });
+    });
+</script>
 @endsection

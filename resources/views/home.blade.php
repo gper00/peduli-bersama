@@ -1,25 +1,26 @@
+@php($hasHero = true) @endphp
 @extends('layouts.app')
 
 @section('title', 'Beranda | Peduli Bersama - Platform Donasi Online')
 
 @section('content')
 <!-- Hero Section -->
-<section class="relative bg-gradient-to-r from-blue-700 to-blue-900 text-white overflow-hidden">
+<section class="relative bg-gradient-to-r from-blue-700 to-blue-900 text-white overflow-hidden pt-20">
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[size:16px]"></div>
     <div class="absolute h-full w-full bg-gradient-to-t from-blue-900/50"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative">
         <div class="md:flex md:items-center md:justify-between">
             <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
                 <h1 class="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-                    <span class="block mb-2">Bantu Wujudkan</span>
-                    <span class="block text-blue-300">Perubahan Bersama</span>
+                    <span class="block mb-2">Satukan Tangan</span>
+                    <span class="block text-blue-300">Ringankan Beban</span>
                 </h1>
                 <p class="mt-6 text-lg leading-relaxed text-blue-100 max-w-2xl">
                     Platform donasi yang terpercaya untuk membantu sesama. Bergabunglah dengan ribuan orang yang telah
                     memberikan dampak positif bagi masyarakat.
                 </p>
                 <div class="mt-8 flex flex-col sm:flex-row gap-4">
-                    <a href="{{ route('register') }}"
+                    <a href="{{ route('register', ['redirect' => url()->current()]) }}"
                         class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-white text-blue-700 hover:bg-blue-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                         Mulai Donasi
                         <svg class="ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

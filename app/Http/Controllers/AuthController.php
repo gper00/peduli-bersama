@@ -24,56 +24,79 @@ class AuthController extends Controller
 
         if(Str::contains($credentials['usernameOrEmail'], '@')){
             $credentials['email'] = $credentials['usernameOrEmail'];
-
             unset($credentials['usernameOrEmail']);
 
             if(Auth::attempt($credentials))
             {
                 $request->session()->regenerate();
-                
-                // Handle redirect parameter if exists
-                if ($request->has('redirect')) {
+
+                // Handle redirect parameter if exists and valid
+                if ($request->has('redirect') && $this->isValidRedirect($request->redirect)) {
                     return redirect($request->redirect);
                 }
-                
+
                 // Default redirect based on role
                 if (Auth::user()->role === 'admin') {
                     return redirect('/dashboard');
                 } else if (Auth::user()->role === 'creator') {
                     return redirect('/dashboard/campaigns');
+                } else if (Auth::user()->role === 'donor') {
+                    return redirect('/');
                 } else {
-                    return redirect()->intended('/');
+                    return redirect('/');
                 }
             }
 
             return back()->with('failed', 'Your email or password are incorrect!');
         } else {
             $credentials['username'] = $credentials['usernameOrEmail'];
-
             unset($credentials['usernameOrEmail']);
 
             if(Auth::attempt($credentials))
             {
                 $request->session()->regenerate();
-                
-                // Handle redirect parameter if exists
-                if ($request->has('redirect')) {
+
+                // Handle redirect parameter if exists and valid
+                if ($request->has('redirect') && $this->isValidRedirect($request->redirect)) {
                     return redirect($request->redirect);
                 }
-                
+
                 // Default redirect based on role
                 if (Auth::user()->role === 'admin') {
                     return redirect('/dashboard');
                 } else if (Auth::user()->role === 'creator') {
                     return redirect('/dashboard/campaigns');
+                } else if (Auth::user()->role === 'donor') {
+                    return redirect('/');
                 } else {
-                    return redirect()->intended('/');
+                    return redirect('/');
                 }
             }
 
             return back()->with('failed', 'Your username or password are incorrect!');
         }
+    }
 
+    /**
+     * Validasi agar redirect hanya ke halaman yang valid (bukan endpoint API)
+     */
+    protected function isValidRedirect($url)
+    {
+        // Hanya izinkan redirect ke halaman public, campaign, donate, dsb, bukan endpoint API
+        $forbidden = [
+            '/dashboard/notifications/unread-count',
+            '/dashboard/notifications/latest',
+            '/dashboard/notifications/read-all',
+            '/dashboard/messages/unread-count',
+            '/api/',
+        ];
+        foreach ($forbidden as $forbid) {
+            if (str_contains($url, $forbid)) {
+                return false;
+            }
+        }
+        // Hanya izinkan redirect ke URL dalam domain aplikasi
+        return str_starts_with($url, '/') && !str_starts_with($url, '//');
     }
 
     public function logout(Request $request)
@@ -84,7 +107,7 @@ class AuthController extends Controller
 
         return redirect('/');
     }
-    
+
     /**
      * Show registration form
      */
@@ -92,7 +115,7 @@ class AuthController extends Controller
     {
         return view('register');
     }
-    
+
     /**
      * Store a new user
      */
@@ -104,7 +127,7 @@ class AuthController extends Controller
             'username' => 'required|string|max:30|unique:users|alpha_dash',
             'password' => 'required|string|min:8|confirmed',
         ]);
-        
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -112,14 +135,14 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
             'role' => 'donor', // Set default role to donor
         ]);
-        
+
         Auth::login($user);
-        
-        // Handle redirect parameter if exists
-        if ($request->has('redirect')) {
+
+        // Handle redirect parameter if exists and valid
+        if ($request->has('redirect') && $this->isValidRedirect($request->redirect)) {
             return redirect($request->redirect)->with('success', 'Akun berhasil dibuat dan Anda telah masuk.');
         }
-        
+
         // Default redirect based on role
         if ($user->role === 'donor') {
             return redirect('/')->with('success', 'Akun berhasil dibuat dan Anda telah masuk.');

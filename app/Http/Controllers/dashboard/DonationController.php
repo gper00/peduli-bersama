@@ -26,26 +26,30 @@ class DonationController extends Controller
         }
 
         // Filter berdasarkan status
-        if ($request->has('status') && in_array($request->status, ['pending', 'processing', 'success', 'failed', 'expired', 'refunded'])) {
+        if ($request->filled('status') && in_array($request->status, ['pending', 'processing', 'success', 'failed', 'expired', 'refunded'])) {
             $query->where('status', $request->status);
         }
 
         // Filter berdasarkan campaign
-        if ($request->has('campaign_id')) {
+        if ($request->filled('campaign_id')) {
             $query->where('campaign_id', $request->campaign_id);
         }
 
         // Filter berdasarkan tanggal
-        if ($request->has('date_from') && $request->has('date_to')) {
+        if ($request->filled('date_from') && $request->filled('date_to')) {
             $query->whereBetween('created_at', [$request->date_from, $request->date_to]);
         }
 
         // Filter berdasarkan rentang nominal
-        if ($request->has('amount_min') && $request->has('amount_max')) {
+        if ($request->filled('amount_min') && $request->filled('amount_max')) {
             $query->whereBetween('amount', [$request->amount_min, $request->amount_max]);
         }
 
-        $donations = $query->latest()->paginate(15);
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $donations = $query->latest()->get();
 
         // Untuk dropdown filter
         $campaigns = Campaign::active()->get(['id', 'title']);
@@ -98,12 +102,12 @@ class DonationController extends Controller
         $userId = null;
         if (Auth::check() && !($validatedData['anonymous'] ?? false)) {
             $userId = Auth::id();
-            
+
             // Jika user login, tambahkan nama dan email user jika tidak diisi
             if (empty($validatedData['donor_name'])) {
                 $validatedData['donor_name'] = Auth::user()->name;
             }
-            
+
             if (empty($validatedData['donor_email'])) {
                 $validatedData['donor_email'] = Auth::user()->email;
             }
@@ -193,13 +197,13 @@ class DonationController extends Controller
         // Update jumlah donasi pada campaign
         $campaign = $donation->campaign;
         $campaign->increment('current_amount', $donation->amount);
-        
+
         // Update jumlah donor pada campaign jika donor belum pernah donasi
         $campaignDonorCount = Donation::where('campaign_id', $campaign->id)
             ->where('status', 'success')
             ->distinct('user_id')
             ->count('user_id');
-            
+
         $campaign->update(['donor_count' => $campaignDonorCount]);
     }
 
@@ -228,27 +232,27 @@ class DonationController extends Controller
         if ($oldStatus != 'success' && $newStatus == 'success') {
             $campaign = $donation->campaign;
             $campaign->increment('current_amount', $donation->amount);
-            
+
             // Update jumlah donor pada campaign
             $campaignDonorCount = Donation::where('campaign_id', $campaign->id)
                 ->where('status', 'success')
                 ->distinct('user_id')
                 ->count('user_id');
-                
+
             $campaign->update(['donor_count' => $campaignDonorCount]);
         }
-        
+
         // Jika status berubah dari success, kurangi campaign amount
         if ($oldStatus == 'success' && $newStatus != 'success') {
             $campaign = $donation->campaign;
             $campaign->decrement('current_amount', $donation->amount);
-            
+
             // Update jumlah donor pada campaign
             $campaignDonorCount = Donation::where('campaign_id', $campaign->id)
                 ->where('status', 'success')
                 ->distinct('user_id')
                 ->count('user_id');
-                
+
             $campaign->update(['donor_count' => $campaignDonorCount]);
         }
 
@@ -262,35 +266,35 @@ class DonationController extends Controller
     {
         $query = Donation::with(['campaign'])
             ->where('user_id', Auth::id());
-            
+
         // Filter berdasarkan status
-        if ($request->has('status') && in_array($request->status, ['pending', 'processing', 'success', 'failed', 'expired', 'refunded'])) {
+        if ($request->filled('status') && in_array($request->status, ['pending', 'processing', 'success', 'failed', 'expired', 'refunded'])) {
             $query->where('status', $request->status);
         }
-        
+
         // Filter berdasarkan tanggal
-        if ($request->has('date_from') && $request->has('date_to')) {
+        if ($request->filled('date_from') && $request->filled('date_to')) {
             $query->whereBetween('created_at', [$request->date_from, $request->date_to]);
         }
-        
-        $donations = $query->latest()->paginate(10);
-        
+
+        $donations = $query->latest()->get();
+
         // Statistik untuk halaman riwayat donasi
         $successfulDonations = Donation::where('user_id', Auth::id())
             ->where('status', 'success')
             ->count();
-            
+
         $pendingDonations = Donation::where('user_id', Auth::id())
             ->where('status', 'pending')
             ->count();
-            
+
         $totalDonated = Donation::where('user_id', Auth::id())
             ->where('status', 'success')
             ->sum('amount');
 
         return view('dashboard.donation.my-donations', compact('donations', 'successfulDonations', 'pendingDonations', 'totalDonated'));
     }
-    
+
     /**
      * Generate donation receipt/invoice PDF.
      */

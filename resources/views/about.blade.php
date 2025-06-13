@@ -1,10 +1,11 @@
+@php($hasHero = true) @endphp
 @extends('layouts.app')
 
 @section('title', 'Tentang Kami | Peduli Bersama')
 
 @section('content')
 <!-- Hero Section -->
-<div class="bg-gradient-to-r from-blue-700 to-blue-900 text-white">
+<div class="bg-gradient-to-r from-blue-700 to-blue-900 text-white pt-20">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
     <h1 class="text-4xl md:text-5xl font-bold mb-4">
       Tentang Peduli Bersama
@@ -333,7 +334,7 @@
           Mulai Kampanye
         </a>
       @else
-        <a href="{{ route('login') }}" class="bg-blue-800 text-white hover:bg-blue-700 px-8 py-3 rounded-md text-base font-medium shadow-lg transition duration-300">
+        <a href="{{ route('login', ['redirect' => url()->current()]) }}" class="bg-blue-800 text-white hover:bg-blue-700 px-8 py-3 rounded-md text-base font-medium shadow-lg transition duration-300">
           Login untuk Mulai Kampanye
         </a>
       @endif

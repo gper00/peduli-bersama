@@ -1,117 +1,55 @@
-<footer class="bg-gray-800 text-white pt-16 pb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<footer class="bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- About Section -->
             <div>
-                <div class="flex items-center mb-4">
-                    <i class="fas fa-heart text-blue-500 text-2xl mr-2"></i>
-                    <span class="text-xl font-semibold">Peduli Bersama</span>
-                </div>
-                <p class="text-gray-400 mb-4">
-                    Platform donasi online yang menghubungkan orang-orang yang membutuhkan dengan para donatur yang ingin membantu.
+                <h3 class="text-lg font-semibold mb-4">Peduli Bersama</h3>
+                <p class="text-gray-400 text-sm">
+                    Platform donasi online yang menghubungkan para donatur dengan mereka yang membutuhkan bantuan.
                 </p>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                </div>
             </div>
 
+            <!-- Quick Links -->
             <div>
-                <h3 class="text-lg font-semibold mb-4">Tentang Kami</h3>
+                <h3 class="text-lg font-semibold mb-4">Tautan Cepat</h3>
                 <ul class="space-y-2">
-                    <li>
-                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                            Visi & Misi
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                            Tim Kami
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                            Cara Kerja
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                            Karir
-                        </a>
-                    </li>
+                    <li><a href="{{ route('home') }}" class="text-gray-400 hover:text-white text-sm">Beranda</a></li>
+                    <li><a href="{{ route('public.campaigns') }}" class="text-gray-400 hover:text-white text-sm">Galang Dana</a></li>
+                    <li><a href="{{ url('/about') }}" class="text-gray-400 hover:text-white text-sm">Tentang Kami</a></li>
+                    <li><a href="{{ url('/contact') }}" class="text-gray-400 hover:text-white text-sm">Hubungi Kami</a></li>
                 </ul>
             </div>
 
+            <!-- Contact Info -->
             <div>
-                <h3 class="text-lg font-semibold mb-4">Bergabung</h3>
-                <ul class="space-y-2">
-                    <li>
-                        <a href="{{ route('public.campaigns') }}" class="text-gray-400 hover:text-white transition duration-300">
-                            Mulai Galang Dana
-                        </a>
+                <h3 class="text-lg font-semibold mb-4">Kontak</h3>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope mr-2"></i>
+                        info@pedulibersama.com
                     </li>
-                    <li>
-                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                            Cara Berdonasi
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                            Program Corporate
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                            Jadi Relawan
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div>
-                <h3 class="text-lg font-semibold mb-4">Hubungi Kami</h3>
-                <ul class="space-y-2">
-                    <li class="flex items-start">
-                        <i class="fas fa-map-marker-alt text-gray-400 mt-1 mr-2"></i>
-                        <span class="text-gray-400">
-                            Jl. Peduli No. 123, Jakarta Selatan, Indonesia
-                        </span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fas fa-envelope text-gray-400 mt-1 mr-2"></i>
-                        <span class="text-gray-400">info@pedulibersama.org</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fas fa-phone text-gray-400 mt-1 mr-2"></i>
-                        <span class="text-gray-400">+62 21 1234 5678</span>
+                    <li class="flex items-center">
+                        <i class="fas fa-phone mr-2"></i>
+                        +62 123 4567 890
                     </li>
                 </ul>
             </div>
         </div>
 
-        <div class="border-t border-gray-700 mt-12 pt-8">
+        <div class="border-t border-gray-800 mt-8 pt-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-400 text-sm mb-4 md:mb-0">
+                <p class="text-sm text-gray-400">
                     &copy; {{ date('Y') }} Peduli Bersama. Hak Cipta Dilindungi.
                 </p>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">
-                        Syarat & Ketentuan
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-facebook"></i>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">
-                        Kebijakan Privasi
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-twitter"></i>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">
-                        FAQ
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-instagram"></i>
                     </a>
                 </div>
             </div>

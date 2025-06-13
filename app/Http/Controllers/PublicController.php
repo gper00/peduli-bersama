@@ -280,6 +280,7 @@ class PublicController extends Controller
      */
     public function donateForm($slug)
     {
+
         $campaign = Campaign::where('slug', $slug)
             ->where('status', 'active')
             ->where(function($q) {
@@ -370,6 +371,30 @@ class PublicController extends Controller
         $donationData['payment_url'] = route('donation.pay', ['invoice' => $invoiceNumber]);
 
         $donation = Donation::create($donationData);
+
+        // Simpan feedback jika diisi
+        if ($request->filled('feedback_subject') && $request->filled('feedback_message')) {
+            // Mapping subject ke type enum
+            $type = match ($request->feedback_subject) {
+                'saran' => 'suggestion',
+                'kritik' => 'complaint',
+                'pertanyaan' => 'question',
+                default => 'other',
+            };
+
+            \App\Models\Feedback::create([
+                'user_id' => $userId,
+                'campaign_id' => $campaign->id,
+                'donation_id' => $donation->id,
+                'name' => $donation->donor_name,
+                'email' => $donation->donor_email,
+                'subject' => $request->feedback_subject,
+                'type' => $type,
+                'priority' => 'medium',
+                'message' => $request->feedback_message,
+                'status' => 'unread',
+            ]);
+        }
 
         return redirect()->route('donation.pay', ['invoice' => $donation->invoice_number]);
     }
@@ -496,5 +521,29 @@ class PublicController extends Controller
     public function contact()
     {
         return view('contact');
+    }
+
+    /**
+     * Display all donors for a campaign.
+     */
+    public function campaignDonors($slug)
+    {
+        $campaign = Campaign::where('slug', $slug)
+            ->where('status', 'active')
+            ->where(function($q) {
+                $q->where('verification_status', 'verified')
+                  ->orWhereHas('user', function($userQuery) {
+                      $userQuery->where('role', 'admin');
+                  });
+            })
+            ->firstOrFail();
+
+        $donations = $campaign->donations()
+            ->where('status', 'success')
+            ->with('user')
+            ->latest()
+            ->paginate(20);
+
+        return view('campaign-donors', compact('campaign', 'donations'));
     }
 }

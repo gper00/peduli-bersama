@@ -33,12 +33,12 @@ class MessageController extends Controller
         $message->email = $request->email;
         $message->subject = $request->subject;
         $message->message = $request->message;
-        
+
         // Associate with user if logged in
         if (Auth::check()) {
             $message->user_id = Auth::id();
         }
-        
+
         $message->save();
 
         return redirect()->back()->with('success', 'Pesan Anda telah berhasil dikirim. Terima kasih atas masukan Anda!');
@@ -54,12 +54,12 @@ class MessageController extends Controller
         if (Auth::user()->role !== 'admin') {
             abort(403, 'Unauthorized action.');
         }
-        
+
         // For notification dropdown, limit to 5 unread messages
         if ($request->has('limit') && $request->format === 'json') {
             $limit = $request->limit ?? 5;
             $messages = Message::unread()->newest()->take($limit)->get();
-            
+
             $formattedMessages = $messages->map(function($message) {
                 return [
                     'id' => $message->id,
@@ -70,17 +70,17 @@ class MessageController extends Controller
                     'time_ago' => $message->created_at->diffForHumans(),
                 ];
             });
-            
+
             return response()->json([
                 'messages' => $formattedMessages,
                 'unread_count' => Message::unread()->count()
             ]);
         }
-        
+
         // For normal page view
-        $messages = Message::newest()->paginate(15);
+        $messages = Message::newest()->get();
         $unreadCount = Message::unread()->count();
-        
+
         return view('dashboard.message.index', compact('messages', 'unreadCount'));
     }
 
@@ -94,13 +94,13 @@ class MessageController extends Controller
         if (Auth::user()->role !== 'admin') {
             abort(403, 'Unauthorized action.');
         }
-        
+
         // Mark as read if not already
         if (!$message->is_read) {
             $message->is_read = true;
             $message->save();
         }
-        
+
         return view('dashboard.message.show', compact('message'));
     }
 
@@ -114,10 +114,10 @@ class MessageController extends Controller
         if (Auth::user()->role !== 'admin') {
             abort(403, 'Unauthorized action.');
         }
-        
+
         $message->is_read = !$message->is_read;
         $message->save();
-        
+
         return redirect()->back()->with('success', 'Status pesan berhasil diperbarui');
     }
 
@@ -130,7 +130,7 @@ class MessageController extends Controller
         if (Auth::user()->role !== 'admin') {
             return response()->json(['count' => 0]);
         }
-        
+
         $count = Message::unread()->count();
         return response()->json(['count' => $count]);
     }

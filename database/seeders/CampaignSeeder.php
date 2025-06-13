@@ -28,6 +28,7 @@ class CampaignSeeder extends Seeder
                 'status' => 'active',
                 'verification_status' => 'verified',
                 'featured' => true,
+                'cover_image' => null,
             ],
             [
                 'user_id' => 3, // Creator user
@@ -43,6 +44,7 @@ class CampaignSeeder extends Seeder
                 'status' => 'active',
                 'verification_status' => 'verified',
                 'featured' => false,
+                'cover_image' => null,
             ],
             [
                 'user_id' => 3, // Creator user
@@ -58,6 +60,39 @@ class CampaignSeeder extends Seeder
                 'status' => 'active',
                 'verification_status' => 'verified',
                 'featured' => true,
+                'cover_image' => null,
+            ],
+            [
+                'user_id' => 3, // Creator user
+                'category_id' => 2, // Kurang Mampu
+                'title' => 'Bantuan Modal Usaha UMKM',
+                'slug' => 'bantuan-modal-usaha-umkm',
+                'short_description' => 'Bantu pengusaha kecil untuk mengembangkan usahanya',
+                'description' => 'Program ini bertujuan membantu pengusaha kecil yang membutuhkan modal untuk mengembangkan usahanya. Dana yang terkumpul akan digunakan untuk memberikan pinjaman modal usaha dengan bunga rendah kepada pengusaha UMKM yang terpilih.',
+                'target_amount' => 50000000,
+                'current_amount' => 0,
+                'start_date' => '2025-06-01',
+                'end_date' => '2025-09-01',
+                'status' => 'active',
+                'verification_status' => 'verified',
+                'featured' => false,
+                'cover_image' => null,
+            ],
+            [
+                'user_id' => 3, // Creator user
+                'category_id' => 4, // Yatim Piatu
+                'title' => 'Beasiswa Anak Yatim',
+                'slug' => 'beasiswa-anak-yatim',
+                'short_description' => 'Bantu pendidikan anak-anak yatim di panti asuhan',
+                'description' => 'Program beasiswa untuk anak-anak yatim di panti asuhan Al-Hidayah. Dana yang terkumpul akan digunakan untuk biaya sekolah, seragam, buku, dan kebutuhan pendidikan lainnya.',
+                'target_amount' => 75000000,
+                'current_amount' => 0,
+                'start_date' => '2025-06-15',
+                'end_date' => '2025-12-15',
+                'status' => 'active',
+                'verification_status' => 'verified',
+                'featured' => true,
+                'cover_image' => null,
             ],
         ];
 

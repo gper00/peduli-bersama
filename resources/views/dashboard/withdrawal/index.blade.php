@@ -123,13 +123,13 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <!-- Pagination -->
-                    @if($withdrawals->hasPages())
+                    {{-- @if($withdrawals->hasPages())
                     <div class="mt-3">
                         {{ $withdrawals->links() }}
                     </div>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
         </div>
@@ -161,7 +161,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row mb-4">
                         <div class="col-md-12">
                             <div class="d-flex">
@@ -171,14 +171,14 @@
                                 <div>
                                     <h5>Perhatian</h5>
                                     <p>
-                                        Pastikan nama pemilik rekening sesuai dengan nama penggalang dana yang terdaftar. 
+                                        Pastikan nama pemilik rekening sesuai dengan nama penggalang dana yang terdaftar.
                                         Jika berbeda, maka penarikan dana tidak akan diproses.
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="d-flex">

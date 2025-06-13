@@ -5,7 +5,7 @@
 <div class="content">
     <div class="page-inner">
         <div class="page-header">
-            <h4 class="page-title">User Details</h4>
+            <h4 class="page-title">Detail Pengguna</h4>
             <ul class="breadcrumbs">
                 <li class="nav-home">
                     <a href="/dashboard">
@@ -22,7 +22,7 @@
                     <i class="flaticon-right-arrow"></i>
                 </li>
                 <li class="nav-item">
-                    <a href="#">User Details</a>
+                    <a href="#">Detail Pengguna</a>
                 </li>
             </ul>
         </div>
@@ -31,21 +31,21 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
-                            <h4 class="card-title">{{ $user->name }}'s Profile</h4>
+                            <h4 class="card-title">Profil {{ $user->name }}</h4>
                             <div class="ml-auto">
                                 @if(auth()->user()->isAdmin() || auth()->id() === $user->id)
-                                <a href="/dashboard/users/{{ $user->id }}/edit" class="btn btn-primary btn-round">
-                                    <i class="fa fa-edit mr-2"></i> Edit Profile
+                                <a href="/dashboard/users/{{ $user->id }}/edit" class="btn btn-warning btn-round">
+                                    <i class="fa fa-edit mr-2"></i> Edit Profil
                                 </a>
                                 @endif
-                                
+
                                 @if(auth()->user()->isAdmin() && auth()->id() !== $user->id)
                                     @if(auth()->user()->isSuperAdmin() || !$user->isAdmin())
                                     <form action="/dashboard/users/{{ $user->id }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('delete')
                                         <button type="submit" class="btn btn-danger btn-round ml-2 delete-btn">
-                                            <i class="fa fa-trash mr-2"></i> Delete User
+                                            <i class="fa fa-trash mr-2"></i> Hapus Pengguna
                                         </button>
                                     </form>
                                     @endif
@@ -69,13 +69,13 @@
                                         <i class="fab fa-facebook-f"></i>
                                     </a>
                                     @endif
-                                    
+
                                     @if($user->twitter_url)
                                     <a href="{{ $user->twitter_url }}" target="_blank" class="btn btn-sm btn-round btn-info mx-1">
                                         <i class="fab fa-twitter"></i>
                                     </a>
                                     @endif
-                                    
+
                                     @if($user->instagram_url)
                                     <a href="{{ $user->instagram_url }}" target="_blank" class="btn btn-sm btn-round btn-danger mx-1">
                                         <i class="fab fa-instagram"></i>
@@ -88,7 +88,7 @@
                                     <table class="table table-hover">
                                         <tbody>
                                             <tr>
-                                                <td width="200"><strong>Username</strong></td>
+                                                <td width="200"><strong>Nama Pengguna</strong></td>
                                                 <td>{{ $user->username }}</td>
                                             </tr>
                                             <tr>
@@ -96,47 +96,31 @@
                                                 <td>{{ $user->email }}</td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Phone Number</strong></td>
-                                                <td>{{ $user->phone_number ?: 'Not provided' }}</td>
+                                                <td><strong>Nomor Telepon</strong></td>
+                                                <td>{{ $user->phone_number ?: 'Belum diisi' }}</td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Address</strong></td>
-                                                <td>{{ $user->address ?: 'Not provided' }}</td>
+                                                <td><strong>Alamat</strong></td>
+                                                <td>{{ $user->address ?: 'Belum diisi' }}</td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Account Created</strong></td>
+                                                <td><strong>Akun Dibuat</strong></td>
                                                 <td>{{ $user->created_at->format('d F Y, H:i') }}</td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Last Updated</strong></td>
+                                                <td><strong>Terakhir Diperbarui</strong></td>
                                                 <td>{{ $user->updated_at->format('d F Y, H:i') }}</td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Email Verified</strong></td>
-                                                <td>
-                                                    @if($user->email_verified_at)
-                                                        <span class="text-success">
-                                                            <i class="fas fa-check-circle"></i> 
-                                                            Verified ({{ $user->email_verified_at->format('d F Y, H:i') }})
-                                                        </span>
-                                                    @else
-                                                        <span class="text-danger">
-                                                            <i class="fas fa-times-circle"></i>
-                                                            Not Verified
-                                                        </span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Account Status</strong></td>
+                                                <td><strong>Status Akun</strong></td>
                                                 <td>
                                                     @if($user->is_active)
                                                         <span class="text-success">
-                                                            <i class="fas fa-check-circle"></i> Active
+                                                            <i class="fas fa-check-circle"></i> Aktif
                                                         </span>
                                                     @else
                                                         <span class="text-danger">
-                                                            <i class="fas fa-times-circle"></i> Inactive
+                                                            <i class="fas fa-times-circle"></i> Tidak Aktif
                                                         </span>
                                                     @endif
                                                 </td>
@@ -144,20 +128,20 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                
+
                                 @if($user->isCreator())
                                 <div class="mt-4">
-                                    <h5 class="font-weight-bold">Campaigns Created</h5>
+                                    <h5 class="font-weight-bold">Campaign yang Dibuat</h5>
                                     @if($user->campaigns->count() > 0)
                                     <div class="table-responsive">
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th>Title</th>
-                                                    <th>Category</th>
+                                                    <th>Judul</th>
+                                                    <th>Kategori</th>
                                                     <th>Status</th>
-                                                    <th>Amount</th>
-                                                    <th>Action</th>
+                                                    <th>Jumlah</th>
+                                                    <th>Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -172,7 +156,7 @@
                                                     </td>
                                                     <td>{{ number_format($campaign->current_amount) }} / {{ number_format($campaign->target_amount) }}</td>
                                                     <td>
-                                                        <a href="/dashboard/campaigns/{{ $campaign->id }}" class="btn btn-sm btn-primary">View</a>
+                                                        <a href="/dashboard/campaigns/{{ $campaign->id }}" class="btn btn-sm btn-primary">Lihat</a>
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -180,11 +164,11 @@
                                         </table>
                                     </div>
                                     @else
-                                    <p class="text-muted">No campaigns created yet.</p>
+                                    <p class="text-muted">Belum ada campaign yang dibuat.</p>
                                     @endif
                                 </div>
                                 @endif
-                                
+
                                 @if($user->isDonor() || $user->isAdmin())
                                 <div class="mt-4">
                                     <h5 class="font-weight-bold">Recent Donations</h5>
@@ -238,9 +222,15 @@
 <script>
     // Confirmation for delete button
     $('.delete-btn').click(function(e){
-        if(!confirm('Are you sure you want to delete this user? This action cannot be undone.')){
             e.preventDefault();
-        }
+        const form = this.closest('form');
+
+        confirmDelete("Anda akan menghapus pengguna ini. Tindakan ini tidak dapat dibatalkan!")
+            .then((willDelete) => {
+                if (willDelete) {
+                    form.submit();
+                }
+            });
     });
 </script>
 @endpush

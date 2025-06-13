@@ -14,8 +14,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::orderBy('sort_order')->paginate(10);
-        
+        $categories = Category::orderBy('sort_order')->get();
+
         return view('dashboard.category.index', compact('categories'));
     }
 
@@ -40,16 +40,16 @@ class CategoryController extends Controller
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer',
         ]);
-        
+
         // Generate slug from name
         $validatedData['slug'] = Str::slug($request->name);
-        
+
         // Set default values
         $validatedData['is_active'] = $request->has('is_active') ? 1 : 0;
         $validatedData['sort_order'] = $request->sort_order ?? 0;
-        
+
         Category::create($validatedData);
-        
+
         return redirect()->route('dashboard.categories.index')
             ->with('success', 'Kategori berhasil dibuat!');
     }
@@ -83,18 +83,18 @@ class CategoryController extends Controller
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer',
         ]);
-        
+
         // Update slug only if name has changed
         if ($request->name != $category->name) {
             $validatedData['slug'] = Str::slug($request->name);
         }
-        
+
         // Set default values
         $validatedData['is_active'] = $request->has('is_active') ? 1 : 0;
         $validatedData['sort_order'] = $request->sort_order ?? 0;
-        
+
         $category->update($validatedData);
-        
+
         return redirect()->route('dashboard.categories.index')
             ->with('success', 'Kategori berhasil diperbarui!');
     }
@@ -106,14 +106,14 @@ class CategoryController extends Controller
     {
         // Check if category has campaigns
         $campaignCount = $category->campaigns()->count();
-        
+
         if ($campaignCount > 0) {
             return redirect()->route('dashboard.categories.index')
                 ->with('error', 'Kategori tidak dapat dihapus karena masih memiliki ' . $campaignCount . ' campaign terkait.');
         }
-        
+
         $category->delete();
-        
+
         return redirect()->route('dashboard.categories.index')
             ->with('success', 'Kategori berhasil dihapus!');
     }

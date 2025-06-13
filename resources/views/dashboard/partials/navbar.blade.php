@@ -47,9 +47,41 @@
                 </li>
 
                 <li class="nav-item hidden-caret">
-                    <a class="nav-link" href="/dashboard/mails" role="button">
+                    <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-envelope"></i>
+                        @php
+                            $unreadMessagesCount = \App\Models\Message::unread()->count();
+                        @endphp
+                        @if($unreadMessagesCount > 0)
+                            <span class="notification">{{ $unreadMessagesCount }}</span>
+                        @endif
                     </a>
+                    <ul class="dropdown-menu messages-notif-box animated fadeIn" aria-labelledby="messageDropdown">
+                        <li>
+                            <div class="dropdown-title d-flex justify-content-between align-items-center">
+                                Pesan Masuk
+                                <a href="{{ route('dashboard.messages.index') }}" class="small">Lihat Semua</a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="notif-center">
+                                @foreach(\App\Models\Message::latest()->take(5)->get() as $message)
+                                    <a href="{{ route('dashboard.messages.show', $message->id) }}">
+                                        <div class="notif-img">
+                                            <img src="{{ asset('storage/default/user.jpg') }}" alt="User">
+                                        </div>
+                                        <div class="notif-content">
+                                            <span class="subject">{{ $message->name }}</span>
+                                            <span class="block">
+                                                {{ Str::limit($message->message, 30) }}
+                                            </span>
+                                            <span class="time">{{ $message->created_at->diffForHumans() }}</span>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </li>
+                    </ul>
                 </li>
 
                 {{-- <li class="nav-item dropdown hidden-caret">
@@ -186,34 +218,34 @@
                     </a>
                     <div class="dropdown-menu quick-actions quick-actions-info animated fadeIn">
                         <div class="quick-actions-header">
-                            <span class="title mb-1">Quick Actions</span>
-                            <span class="subtitle op-8">Create Data</span>
+                            <span class="title mb-1">Aksi Cepat</span>
+                            <span class="subtitle op-8">Menu Utama</span>
                         </div>
                         <div class="quick-actions-scroll scrollbar-outer">
                             <div class="quick-actions-items">
                                 <div class="row m-0">
-                                    <a class="col-6 col-md-4 p-0" href="/dashboard/users/create">
+                                    <a class="col-6 col-md-4 p-0" href="{{ route('dashboard.campaigns.create') }}">
                                         <div class="quick-actions-item">
-                                            <i class="fas fa-user"></i>
-                                            <span class="text">New User</span>
+                                            <i class="fas fa-bullhorn"></i>
+                                            <span class="text">Buat Campaign</span>
                                         </div>
                                     </a>
-                                    <a class="col-6 col-md-4 p-0" href="/dashboard/posts/create">
+                                    <a class="col-6 col-md-4 p-0" href="{{ route('dashboard.categories.create') }}">
                                         <div class="quick-actions-item">
-                                            <i class="fas fa-newspaper"></i>
-                                            <span class="text">New Post</span>
+                                            <i class="fas fa-layer-group"></i>
+                                            <span class="text">Tambah Kategori</span>
                                         </div>
                                     </a>
-                                    <a class="col-6 col-md-4 p-0" href="/dashboard/galleries/create">
+                                    <a class="col-6 col-md-4 p-0" href="{{ route('dashboard.users.create') }}">
                                         <div class="quick-actions-item">
-                                            <i class="fas fa-image"></i>
-                                            <span class="text">New Gallery</span>
+                                            <i class="fas fa-user-plus"></i>
+                                            <span class="text">Tambah User</span>
                                         </div>
                                     </a>
-                                    <a class="col-6 col-md-4 p-0" href="/dashboard/products/create">
+                                    <a class="col-6 col-md-4 p-0" href="{{ route('dashboard.withdrawals.create') }}">
                                         <div class="quick-actions-item">
-                                            <i class="fas fa-shopping-bag"></i>
-                                            <span class="text">New Product</span>
+                                            <i class="fas fa-money-check-alt"></i>
+                                            <span class="text">Tarik Dana</span>
                                         </div>
                                     </a>
                                 </div>
@@ -245,10 +277,16 @@
                                     </div>
                                 </div> --}}
                                 <div class="user-box">
-                                    <div class="avatar-lg"><img src="https://dummyimage.com/100x100/000/fff" class="avatar-img rounded"></div>
+                                    <div class="avatar-lg">
+                                        @if(Auth::user()->image)
+                                        <img src="{{ asset('storage/' . Auth::user()->image) }}" class="avatar-img rounded">
+                                        @else
+                                        <img src="{{ asset('storage/default/user.jpg') }}" class="avatar-img rounded">
+                                        @endif
+                                    </div>
                                     <div class="u-text">
-                                        <h4>Umam Alfarizi
-                                        <p class="text-muted">admin@gmail.com</p>
+                                        <h4>{{ Auth::user()->name }}
+                                        <p class="text-muted">{{ Auth::user()->email }}</p>
                                     </div>
                                 </div>
                             </li>

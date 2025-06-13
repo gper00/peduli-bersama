@@ -1,87 +1,80 @@
 @extends('layouts.app')
+@php($hasHero = false) @endphp
 
 @section('title', 'Pembayaran Berhasil | Peduli Bersama')
 
 @section('content')
-<div class="bg-gray-50 py-10">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="p-6">
-                <div class="text-center mb-6">
-                    <div class="inline-flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 text-blue-600 mb-4">
-                        <i class="fas fa-check-circle text-3xl"></i>
+<div class="bg-gray-50 py-10 pt-28">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div class="p-8">
+                <div class="flex flex-col items-center mb-8">
+                    <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-blue-100 text-blue-600 mb-4 shadow">
+                        <i class="fas fa-check-circle text-4xl"></i>
                     </div>
-                    <h1 class="text-2xl font-bold text-gray-800">Donasi Berhasil!</h1>
-                    <p class="text-gray-600 mt-2">Terima kasih atas kebaikan hati Anda</p>
+                    <h1 class="text-3xl font-extrabold text-gray-800 mb-2">Donasi Berhasil!</h1>
+                    <p class="text-gray-600 text-lg">Terima kasih atas kebaikan hati Anda</p>
                 </div>
 
-                <div class="border border-gray-200 rounded-lg p-6 mb-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm text-gray-500">Invoice</span>
-                        <span class="text-sm font-medium">{{ $donation->invoice_number }}</span>
+                <div class="border border-blue-100 rounded-xl p-6 mb-8 bg-blue-50/30">
+                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                        <div class="flex justify-between items-center">
+                            <dt class="text-sm text-gray-500">Invoice</dt>
+                            <dd class="text-sm font-medium text-gray-800">{{ $donation->invoice_number }}</dd>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <dt class="text-sm text-gray-500">Status</dt>
+                            <dd><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">Pembayaran Berhasil</span></dd>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <dt class="text-sm text-gray-500">Tanggal</dt>
+                            <dd class="text-sm font-medium text-gray-800">{{ $donation->payment_date ? $donation->payment_date->format('d M Y, H:i') : $donation->updated_at->format('d M Y, H:i') }}</dd>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <dt class="text-sm text-gray-500">Metode Pembayaran</dt>
+                            <dd class="text-sm font-medium text-gray-800">{{ ucwords(str_replace('_', ' ', $donation->payment_method)) }}</dd>
+                        </div>
+                        <div class="flex justify-between items-center sm:col-span-2 border-t border-gray-200 pt-4 mt-2">
+                            <dt class="text-sm text-gray-500">Donasi untuk</dt>
+                            <dd class="text-sm font-medium text-gray-800">{{ $donation->campaign->title }}</dd>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <dt class="text-sm text-gray-500">Nama Donatur</dt>
+                            <dd class="text-sm font-medium text-gray-800">{{ $donation->is_anonymous ? 'Anonim' : $donation->donor_name }}</dd>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <dt class="text-sm text-gray-500">Email</dt>
+                            <dd class="text-sm font-medium text-gray-800">{{ $donation->donor_email }}</dd>
+                        </div>
+                        <div class="flex justify-between items-center sm:col-span-2">
+                            <dt class="text-sm text-gray-500">Pesan</dt>
+                            <dd class="text-sm font-medium text-gray-800">{{ $donation->message ? $donation->message : '-' }}</dd>
+                        </div>
+                        <div class="flex justify-between items-center sm:col-span-2 border-t border-gray-200 pt-4 mt-2">
+                            <dt class="text-base font-bold text-gray-700">Total Pembayaran</dt>
+                            <dd class="text-lg font-extrabold text-blue-600">Rp {{ number_format($donation->amount, 0, ',', '.') }}</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <div class="bg-blue-50 rounded-xl p-6 mb-6 flex items-start">
+                    <div class="flex-shrink-0 mt-1">
+                        <i class="fas fa-heart text-blue-600 text-2xl"></i>
                     </div>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm text-gray-500">Status</span>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            Pembayaran Berhasil
-                        </span>
-                    </div>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm text-gray-500">Tanggal</span>
-                        <span class="text-sm font-medium">{{ $donation->payment_date ? $donation->payment_date->format('d M Y, H:i') : $donation->updated_at->format('d M Y, H:i') }}</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm text-gray-500">Metode Pembayaran</span>
-                        <span class="text-sm font-medium">{{ ucwords(str_replace('_', ' ', $donation->payment_method)) }}</span>
-                    </div>
-                    
-                    <div class="border-t border-gray-200 my-4"></div>
-                    
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">Donasi untuk</span>
-                        <span class="text-sm font-medium">{{ $donation->campaign->title }}</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">Nama Donatur</span>
-                        <span class="text-sm font-medium">{{ $donation->is_anonymous ? 'Anonim' : $donation->donor_name }}</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">Email</span>
-                        <span class="text-sm font-medium">{{ $donation->donor_email }}</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm text-gray-500">Pesan</span>
-                        <span class="text-sm font-medium">{{ $donation->message ? $donation->message : '-' }}</span>
-                    </div>
-                    
-                    <div class="border-t border-gray-200 my-4"></div>
-                    
-                    <div class="flex justify-between items-center">
-                        <span class="text-base font-medium text-gray-700">Total Pembayaran</span>
-                        <span class="text-lg font-bold text-blue-600">Rp {{ number_format($donation->amount, 0, ',', '.') }}</span>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-1">Dampak Donasi Anda</h3>
+                        <p class="text-gray-600">
+                            Donasi Anda akan membantu <span class="font-semibold">{{ $donation->campaign->title }}</span> mendekati target <span class="font-semibold">Rp {{ number_format($donation->campaign->target_amount, 0, ',', '.') }}</span>. Saat ini sudah terkumpul <span class="font-semibold">{{ round(($donation->campaign->current_amount / $donation->campaign->target_amount) * 100) }}%</span> dari target.
+                        </p>
                     </div>
                 </div>
 
-                <div class="bg-blue-50 rounded-lg p-6 mb-6">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-heart text-blue-600 text-xl"></i>
-                        </div>
-                        <div class="ml-3">
-                            <h3 class="text-lg font-medium text-gray-800">Dampak Donasi Anda</h3>
-                            <p class="text-gray-600 mt-2">
-                                Donasi Anda akan membantu {{ $donation->campaign->title }} mendekati target Rp {{ number_format($donation->campaign->target_amount, 0, ',', '.') }}. Saat ini sudah terkumpul {{ round(($donation->campaign->current_amount / $donation->campaign->target_amount) * 100) }}% dari target.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-blue-50 rounded-lg p-6 mb-6">
-                    <h3 class="text-lg font-medium text-gray-800 mb-4">Bagikan Kebaikan</h3>
+                <div class="bg-blue-50 rounded-xl p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Bagikan Kebaikan</h3>
                     <p class="text-gray-600 mb-4">
                         Ajak teman dan keluarga Anda untuk ikut berdonasi dan membantu lebih banyak orang
                     </p>
-                    <div class="flex space-x-2">
+                    <div class="flex flex-col sm:flex-row gap-2">
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('public.campaign', $donation->campaign->slug)) }}" target="_blank" class="flex-1 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
                             <i class="fab fa-facebook-f mr-2"></i>
                             Facebook
@@ -102,17 +95,15 @@
                         <i class="fas fa-arrow-left mr-2"></i>
                         Kembali ke Halaman Campaign
                     </a>
-                    
                     <a href="{{ route('public.campaigns') }}" class="w-full text-center text-gray-700 hover:text-gray-900 font-medium py-3 px-6 rounded-md transition duration-300">
                         Jelajahi Campaign Lainnya
                     </a>
                 </div>
             </div>
         </div>
-        
-        <div class="mt-6 text-center">
+        <div class="mt-8 text-center">
             <p class="text-sm text-gray-600">
-                Email konfirmasi telah dikirim ke {{ $donation->donor_email }}
+                Email konfirmasi telah dikirim ke <span class="font-semibold">{{ $donation->donor_email }}</span>
             </p>
         </div>
     </div>

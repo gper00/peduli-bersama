@@ -8,7 +8,7 @@
 <div class="content">
     <div class="page-inner">
         <div class="page-header">
-            <h4 class="page-title">Users</h4>
+            <h4 class="page-title">Kelola Pengguna</h4>
             <ul class="breadcrumbs">
                 <li class="nav-home">
                     <a href="/dashboard">
@@ -26,10 +26,10 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
-                            <h4 class="card-title">Users</h4>
+                            <h4 class="card-title">Daftar Pengguna</h4>
                             <a href="/dashboard/users/create" class="btn btn-md btn-primary btn-round ml-auto" >
                                 <i class="fa fa-plus"></i>
-                                New User
+                                Tambah Pengguna
                             </a>
                         </div>
                     </div>
@@ -88,19 +88,19 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Image</th>
-                                        <th>Name</th>
+                                        <th>Foto</th>
+                                        <th>Nama</th>
                                         <th>Email</th>
-                                        <th style="width: 10%">Action</th>
+                                        <th style="width: 10%">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
                                     <tr>
                                         <th>#</th>
-                                        <th>Image</th>
-                                        <th>Name</th>
+                                        <th>Foto</th>
+                                        <th>Nama</th>
                                         <th>Email</th>
-                                        <th style="width: 10%">Action</th>
+                                        <th style="width: 10%">Aksi</th>
                                     </tr>
                                 </tfoot>
                                 <tbody>
@@ -116,17 +116,17 @@
                                         <td>{{ $user->email }}</td>
                                         <td>
                                             <div class="form-button-action">
-                                                <a href="/dashboard/users/{{ $user->id }}" data-toggle="tooltip" title="" class="text-info p-2" data-original-title="Detail User">
-                                                    <i class="fa fa-info-circle"></i>
+                                                <a href="/dashboard/users/{{ $user->id }}" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Lihat Detail">
+                                                    <i class="fa fa-eye"></i>
                                                 </a>
-                                                <a href="/dashboard/users/{{ $user->id }}/edit" data-toggle="tooltip" title="" class="text-primary p-2" data-original-title="Edit User">
+                                                <a href="/dashboard/users/{{ $user->id }}/edit" data-toggle="tooltip" title="" class="btn btn-link btn-warning btn-lg" data-original-title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-                                                <form id="delete-user-form-{{ $user->id }}" action="/dashboard/users/{{ $user->id }}" method="POST" class="p-0 m-0 d-inline">
+                                                <form id="delete-user-form-{{ $user->id }}" action="/dashboard/users/{{ $user->id }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('delete')
-                                                    <button type="button" data-toggle="tooltip" title="" class="text-danger delete-user border-0 p-2 m-0" data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-original-title="Delete User" style="background:none; cursor: pointer">
-                                                        <i class="fa fa-trash"></i>
+                                                    <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-lg delete-user" data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-original-title="Hapus">
+                                                        <i class="fa fa-times"></i>
                                                     </button>
                                                 </form>
                                             </div>
@@ -163,7 +163,7 @@
                 },
             });
         }
-        
+
         // Handle error message with SweetAlert if present
         var errorMessage = $('#error-message').text();
         if (errorMessage && errorMessage.trim() !== '') {
@@ -179,14 +179,14 @@
                 },
             });
         }
-        
+
         // Delete user button functionality
         $('.delete-user').on('click', function(e) {
             e.preventDefault();
             var userId = $(this).data('id');
             var userName = $(this).data('name');
             var deleteForm = document.getElementById('delete-user-form-' + userId);
-            
+
             swal({
                 title: "Apakah Anda yakin?",
                 text: "Anda akan menghapus pengguna '" + userName + "'. Tindakan ini tidak dapat dibatalkan!",

@@ -1,14 +1,15 @@
 @extends('layouts.app')
+@php($hasHero = false) @endphp
 
 @section('title', 'Daftar | Peduli Bersama')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 pt-28">
     <div class="max-w-md w-full space-y-8">
         <div>
             <div class="flex justify-center">
                 <div class="flex items-center text-blue-500">
-                    <i class="fas fa-heart text-4xl mr-2"></i>
+                    {{-- <i class="fas fa-heart text-4xl mr-2"></i> --}}
                     <span class="text-2xl font-bold">Peduli Bersama</span>
                 </div>
             </div>
@@ -34,7 +35,7 @@
 
         <form class="mt-8 space-y-6" action="{{ route('register') }}" method="POST">
             @csrf
-            
+
             @if(request()->has('redirect'))
             <input type="hidden" name="redirect" value="{{ request()->get('redirect') }}">
             @endif
@@ -82,7 +83,7 @@
                 </button>
             </div>
         </form>
-        
+
         <div class="text-center text-sm text-gray-500 mt-4">
             Dengan mendaftar, Anda menyetujui <a href="#" class="text-blue-600 hover:text-blue-600">Syarat dan Ketentuan</a> serta <a href="#" class="text-blue-600 hover:text-blue-600">Kebijakan Privasi</a> kami.
         </div>

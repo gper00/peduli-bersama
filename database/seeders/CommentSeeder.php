@@ -40,6 +40,33 @@ class CommentSeeder extends Seeder
                 'is_pinned' => true,
                 'status' => 'published',
             ],
+            [
+                'campaign_id' => 1, // Bantuan Korban Banjir Bandang Jember
+                'user_id' => 4, // Donor 2
+                'parent_id' => 1, // Reply to first comment
+                'comment' => 'Saya juga sudah berbagi di media sosial saya. Semoga semakin banyak yang membantu.',
+                'likes' => 2,
+                'is_pinned' => false,
+                'status' => 'published',
+            ],
+            [
+                'campaign_id' => 4, // Bantuan Modal Usaha UMKM
+                'user_id' => 5, // Creator 2
+                'parent_id' => null,
+                'comment' => 'Program ini akan membantu banyak pengusaha kecil. Kami akan memastikan dana digunakan dengan tepat.',
+                'likes' => 4,
+                'is_pinned' => true,
+                'status' => 'published',
+            ],
+            [
+                'campaign_id' => 5, // Beasiswa Anak Yatim
+                'user_id' => null, // Guest user
+                'parent_id' => null,
+                'comment' => 'Program yang sangat mulia. Semoga bisa membantu banyak anak yatim.',
+                'likes' => 6,
+                'is_pinned' => false,
+                'status' => 'pending',
+            ],
         ];
 
         foreach ($comments as $comment) {

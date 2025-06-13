@@ -3,8 +3,9 @@
 @section('title', $campaign->title . ' | Peduli Bersama')
 
 @section('content')
+    @php($hasHero = true) @endphp
     <!-- Campaign Hero Section -->
-    <div class="bg-gradient-to-r from-blue-700 to-blue-900 text-white">
+    <div class="bg-gradient-to-r from-blue-700 to-blue-900 text-white pt-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div>
@@ -84,7 +85,7 @@
             </div>
 
             <div class="prose max-w-none text-gray-700">
-              {!! nl2br(e($campaign->description)) !!}
+              {!! $campaign->description && $campaign->description !== strip_tags($campaign->description) ? $campaign->description : nl2br(e($campaign->description)) !!}
             </div>
 
             @if($campaign->images && count(json_decode($campaign->images)) > 0)
@@ -144,9 +145,9 @@
                   <div class="text-sm text-gray-500">
                     Donasi Rp{{ number_format($donation->amount, 0, ',', '.') }} - {{ $donation->created_at->diffForHumans() }}
                   </div>
-                  @if($donation->message)
+                  {{-- @if($donation->message)
                   <div class="text-sm text-gray-600 mt-1 italic">"{{ Str::limit($donation->message, 50) }}"</div>
-                  @endif
+                  @endif --}}
                 </div>
               </div>
               @endforeach
@@ -163,7 +164,7 @@
 
             @if(isset($campaign->donations) && count($campaign->donations) > 5)
             <div class="mt-6 text-center">
-              <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">
+              <a href="{{ route('public.campaign.donors', $campaign->slug) }}" class="text-blue-600 hover:text-blue-800 font-medium">
                 <i class="fas fa-chevron-down mr-1"></i> Lihat Semua Donatur
               </a>
             </div>
@@ -431,7 +432,7 @@
                   <i class="far fa-comment mr-1"></i> Balas
                 </button>
                 @else
-                <a href="{{ route('login') }}?redirect={{ url()->current() }}#comment-section" class="text-gray-500 hover:text-blue-600 transition">
+                <a href="{{ route('login', ['redirect' => url()->current() . '#comment-section']) }}" class="text-gray-500 hover:text-blue-600 transition">
                   <i class="far fa-comment mr-1"></i> Login untuk balas
                 </a>
                 @endif

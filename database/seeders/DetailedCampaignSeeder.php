@@ -33,10 +33,10 @@ class DetailedCampaignSeeder extends Seeder
 
         // Crear campañas con diferentes estados y características
         $this->createCampaigns($categories, $users);
-        
+
         // Actualizar contador de donantes y monto actual
         $this->updateCampaignDonations();
-        
+
         $this->command->info('Campañas, donaciones y comentarios creados exitosamente.');
     }
 
@@ -63,7 +63,7 @@ class DetailedCampaignSeeder extends Seeder
             'featured' => true,
             'cover_image' => 'campaigns/sekolah-banjir.jpg',
         ]);
-        
+
         // Menambahkan donasi dan komentar untuk campaign 1
         $this->addDonationsAndComments($campaign1, 12);
 
@@ -85,7 +85,7 @@ class DetailedCampaignSeeder extends Seeder
             'featured' => true,
             'cover_image' => 'campaigns/beasiswa.jpg',
         ]);
-        
+
         // Menambahkan donasi dan komentar untuk campaign 2
         $this->addDonationsAndComments($campaign2, 8);
 
@@ -143,7 +143,7 @@ class DetailedCampaignSeeder extends Seeder
             'featured' => false,
             'cover_image' => 'campaigns/gempa-cianjur.jpg',
         ]);
-        
+
         // Menambahkan donasi dan komentar untuk campaign 5 (completed)
         $this->addDonationsAndComments($campaign5, 20);
 
@@ -172,7 +172,7 @@ class DetailedCampaignSeeder extends Seeder
     private function addDonationsAndComments($campaign, $count = 5)
     {
         $donors = User::where('role', 'donor')->take($count)->get();
-        
+
         // Si no hay suficientes usuarios donantes, creamos algunos temporales
         if ($donors->count() < $count) {
             for ($i = $donors->count(); $i < $count; $i++) {
@@ -184,15 +184,15 @@ class DetailedCampaignSeeder extends Seeder
                 ]));
             }
         }
-        
+
         $totalAmount = 0;
         $donorCount = 0;
-        
+
         // Crear donaciones
         foreach ($donors as $index => $donor) {
             $amount = rand(5, 50) * 10000; // Montos entre 50K y 500K
             $isAnonymous = rand(0, 10) > 7; // 30% de probabilidad de ser anónimo
-            
+
             $donation = Donation::create([
                 'invoice_number' => 'INV-' . time() . '-' . Str::random(6),
                 'campaign_id' => $campaign->id,
@@ -208,12 +208,12 @@ class DetailedCampaignSeeder extends Seeder
                 'payment_date' => Carbon::now()->subDays(rand(1, 14)),
                 'created_at' => Carbon::now()->subDays(rand(1, 30)),
             ]);
-            
+
             // Solo contar donaciones exitosas
             if ($donation->status === 'success') {
                 $totalAmount += $amount;
                 $donorCount++;
-                
+
                 // Añadir comentario para algunas donaciones
                 if (rand(0, 10) > 5) { // 50% de probabilidad
                     $commentData = [
@@ -222,43 +222,43 @@ class DetailedCampaignSeeder extends Seeder
                         'status' => 'published',
                         'created_at' => Carbon::now()->subDays(rand(1, 20)),
                     ];
-                    
+
                     if ($isAnonymous) {
                         $commentData['guest_name'] = 'Anonim ' . rand(1, 100);
                     } else {
                         $commentData['user_id'] = $donor->id;
                     }
-                    
+
                     Comment::create($commentData);
                 }
             }
         }
-        
+
         // Actualizar totales en la campaña
         $campaign->update([
             'current_amount' => $totalAmount,
             'donor_count' => $donorCount
         ]);
     }
-    
+
     /**
      * Actualizar contadores de donaciones en todas las campañas
      */
     private function updateCampaignDonations()
     {
         $campaigns = Campaign::all();
-        
+
         foreach ($campaigns as $campaign) {
             // Calcular donaciones exitosas
             $totalDonations = Donation::where('campaign_id', $campaign->id)
                 ->where('status', 'success')
                 ->sum('amount');
-                
+
             // Contar donadores
             $donorCount = Donation::where('campaign_id', $campaign->id)
                 ->where('status', 'success')
                 ->count();
-                
+
             // Actualizar campaña
             $campaign->update([
                 'current_amount' => $totalDonations,

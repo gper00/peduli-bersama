@@ -36,7 +36,7 @@
                                     @csrf
                                     <div class="form-group row">
                                         <label for="name" class="col-form-label col-lg-3 text-lg-right">
-                                            <span>Name *</span>
+                                            <span>Nama *</span>
                                         </label>
                                         <div class="col-lg-9">
                                             <input
@@ -76,7 +76,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <label for="username" class="col-form-label col-lg-3 text-lg-right">
-                                            <span>Username *</span>
+                                            <span>Nama Pengguna *</span>
                                         </label>
                                         <div class="col-lg-9">
                                             <input
@@ -126,7 +126,6 @@
                                                 class="form-control @error('password') is-invalid @enderror"
                                                 id="password"
                                                 name="password"
-                                                value="{{ old('password') }}"
                                                 required
                                             >
                                             @error('password')
@@ -137,16 +136,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="repassword" class="col-form-label col-lg-3 text-lg-right">
-                                            <span>Confirm Password *</span>
+                                        <label for="password_confirmation" class="col-form-label col-lg-3 text-lg-right">
+                                            <span>Konfirmasi Password *</span>
                                         </label>
                                         <div class="col-lg-9">
                                             <input
                                                 type="password"
                                                 class="form-control @error('password_confirmation') is-invalid @enderror"
-                                                id="repassword"
+                                                id="password_confirmation"
                                                 name="password_confirmation"
-                                                value="{{ old('password_confirmation') }}"
                                                 required
                                             >
                                             @error('password_confirmation')
@@ -158,7 +156,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <label for="role" class="col-form-label col-lg-3 text-lg-right">
-                                            <span>Role *</span>
+                                            <span>Peran *</span>
                                         </label>
                                         <div class="col-lg-9">
                                             <select
@@ -167,7 +165,7 @@
                                                 name="role"
                                                 required
                                             >
-                                                <option value="">Select Role</option>
+                                                <option value="">Pilih Peran</option>
                                                 @if($canCreateAdmin)
                                                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                                                 @endif
@@ -180,10 +178,10 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <label for="phone_number" class="col-form-label col-lg-3 text-lg-right">
-                                            <span>Phone Number</span>
+                                            <span>Nomor Telepon</span>
                                         </label>
                                         <div class="col-lg-9">
                                             <input
@@ -201,12 +199,12 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <div class="col-lg-3"></div>
                                         <div class="col-lg-9">
-                                            <button class="btn btn-primary mr-2">Create</button>
-                                            <a href="/dashboard/users" class="btn btn-primary btn-border">Cancel</a>
+                                            <button class="btn btn-primary mr-2">Simpan</button>
+                                            <a href="/dashboard/users" class="btn btn-primary btn-border">Batal</a>
                                         </div>
                                     </div>
                                 </form>

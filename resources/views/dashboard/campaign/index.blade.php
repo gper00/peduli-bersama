@@ -48,6 +48,7 @@
                                         <th>Category</th>
                                         <th>Target</th>
                                         <th>Status</th>
+                                        <th>Verification Status</th>
                                         <th>End Date</th>
                                         @if(Auth::user()->isAdmin())
                                         <th>Created by</th>
@@ -63,6 +64,7 @@
                                         <th>Category</th>
                                         <th>Target</th>
                                         <th>Status</th>
+                                        <th>Verification Status</th>
                                         <th>End Date</th>
                                         @if(Auth::user()->isAdmin())
                                         <th>Created by</th>

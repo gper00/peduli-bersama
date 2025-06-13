@@ -42,10 +42,10 @@ class DonationFeedbackController extends Controller
         $feedback->type = 'donor_feedback';
         $feedback->priority = 'medium';
         $feedback->status = 'unread';
-        $feedback->is_private = $request->has('feedback_private');
-        
+        // $feedback->is_private = $request->has('feedback_private');
+
         $feedback->save();
-        
+
         // Buat notifikasi untuk admin dan pemilik campaign
         NotificationService::createFeedbackNotification($feedback);
 

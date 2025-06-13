@@ -3,12 +3,12 @@
 @section('title', 'Notifikasi | Peduli Bersama')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-8">
+<div class="bg-gray-50 min-h-screen py-8 pt-28">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                 <h1 class="text-xl font-semibold text-gray-800">Notifikasi</h1>
-                
+
                 @if($notifications->where('is_read', false)->count() > 0)
                 <form action="{{ route('dashboard.notifications.mark-all-as-read') }}" method="POST">
                     @csrf
@@ -18,7 +18,7 @@
                 </form>
                 @endif
             </div>
-            
+
             <div class="divide-y divide-gray-200">
                 @forelse($notifications as $notification)
                     <div class="p-4 {{ $notification->is_read ? 'bg-white' : 'bg-blue-50' }} hover:bg-gray-50 transition-colors duration-150">
@@ -38,7 +38,7 @@
                                     <span class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</span>
                                 </div>
                                 <p class="mt-1 text-sm text-gray-600">{{ $notification->message }}</p>
-                                
+
                                 <div class="mt-2 flex items-center justify-between">
                                     <div class="flex space-x-2">
                                         @if($notification->campaign_id)
@@ -46,14 +46,14 @@
                                                 Lihat Campaign
                                             </a>
                                         @endif
-                                        
+
                                         @if($notification->donation_id)
                                             <a href="{{ route('dashboard.donations.show', $notification->donation_id) }}" class="text-xs text-blue-600 hover:text-blue-800">
                                                 Lihat Donasi
                                             </a>
                                         @endif
                                     </div>
-                                    
+
                                     @if(!$notification->is_read)
                                         <form action="{{ route('dashboard.notifications.mark-as-read', $notification->id) }}" method="POST">
                                             @csrf
@@ -73,7 +73,7 @@
                     </div>
                 @endforelse
             </div>
-            
+
             <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
                 {{ $notifications->links() }}
             </div>

@@ -167,7 +167,11 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="mr-3">
-                                                <img class="rounded-circle" width="40" height="40" src="{{ $stat['campaign']->featured_image ?: asset('images/default-campaign.jpg') }}" alt="{{ $stat['campaign']->title }}">
+                                                @if($stat['campaign']->cover_image)
+                                                <img class="rounded-circle" width="40" height="40" src="{{ asset('storage/' . $stat['campaign']->cover_image) }}" alt="{{ $stat['campaign']->title }}">
+                                                @else
+                                                <img class="rounded-circle" width="40" height="40" src="{{ asset('storage/default/image.jpg') }}" alt="{{ $stat['campaign']->title }}">
+                                                @endif
                                             </div>
                                             <div>
                                                 <p class="font-weight-bold mb-0">{{ Str::limit($stat['campaign']->title, 30) }}</p>
@@ -231,7 +235,7 @@
                                 </a>
                             </div>
                         </div>
-                        
+
                         <div class="list-group-item">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
@@ -243,7 +247,7 @@
                                 </a>
                             </div>
                         </div>
-                        
+
                         <div class="list-group-item">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
@@ -259,7 +263,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
@@ -281,7 +285,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="list-group-item">
                             <div class="d-flex">
                                 <div class="mr-3">
@@ -296,7 +300,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="list-group-item">
                             <div class="d-flex">
                                 <div class="mr-3">

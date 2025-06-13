@@ -1,86 +1,160 @@
-// Sweet Alert Configuration for Peduli Bersama Dashboard
-$(document).ready(function () {
-    // Inisialisasi SweetAlert untuk tombol delete dengan class .btn-delete
-    $(document).on('click', '.btn-delete', function(e) {
-        e.preventDefault();
-        const form = $(this).closest('form');
-        const name = $(this).data('name') || 'item';
-        
-        swal({
-            title: 'Apakah Anda yakin?',
-            text: `Anda akan menghapus ${name} ini. Tindakan ini tidak dapat dibatalkan!`,
-            icon: 'warning',
+// Konfigurasi default untuk Sweet Alert
+const sweetAlertConfig = {
+    // Konfigurasi untuk konfirmasi penghapusan
+    delete: {
+        title: "Apakah Anda yakin?",
+        text: "Data yang dihapus tidak dapat dikembalikan!",
+        icon: "warning",
             buttons: {
                 cancel: {
+                text: "Batal",
+                value: false,
                     visible: true,
-                    text: 'Batal',
-                    className: 'btn btn-danger'
+                className: "btn btn-secondary",
+                closeModal: true,
                 },
                 confirm: {
-                    text: 'Ya, Hapus',
-                    className: 'btn btn-success'
+                text: "Ya, hapus!",
+                value: true,
+                visible: true,
+                className: "btn btn-danger",
+                closeModal: true
                 }
+        },
+        dangerMode: true,
+        closeOnClickOutside: false,
+        closeOnEsc: false
+    },
+
+    // Konfigurasi untuk notifikasi sukses
+    success: {
+        title: "Berhasil!",
+        icon: "success",
+        buttons: {
+            confirm: {
+                text: "OK",
+                className: "btn btn-success"
             }
-        }).then((willDelete) => {
-            if (willDelete) {
-                form.submit();
+        },
+        timer: 2000,
+        timerProgressBar: true
+    },
+
+    // Konfigurasi untuk notifikasi error
+    error: {
+        title: "Gagal!",
+        icon: "error",
+        buttons: {
+            confirm: {
+                text: "OK",
+                className: "btn btn-danger"
             }
-        });
-    });
-    
-    // Inisialisasi SweetAlert untuk tombol confirm dengan class .btn-confirm
-    $(document).on('click', '.btn-confirm', function(e) {
-        e.preventDefault();
-        const form = $(this).closest('form');
-        const action = $(this).data('action') || 'melakukan tindakan ini';
-        
-        swal({
-            title: 'Konfirmasi',
-            text: `Apakah Anda yakin ingin ${action}?`,
-            icon: 'info',
+        }
+    },
+
+    // Konfigurasi untuk konfirmasi publikasi
+    publish: {
+        title: "Publikasikan Kampanye?",
+        text: "Kampanye akan dipublikasikan dan terlihat oleh publik.",
+        icon: "info",
             buttons: {
                 cancel: {
+                text: "Batal",
+                value: false,
                     visible: true,
-                    text: 'Batal',
-                    className: 'btn btn-danger'
+                className: "btn btn-secondary",
+                closeModal: true,
                 },
                 confirm: {
-                    text: 'Ya, Lanjutkan',
-                    className: 'btn btn-success'
+                text: "Ya, publikasikan!",
+                value: true,
+                visible: true,
+                className: "btn btn-primary",
+                closeModal: true
                 }
+        },
+        closeOnClickOutside: false,
+        closeOnEsc: false
+    },
+
+    // Konfigurasi untuk konfirmasi selesai
+    complete: {
+        title: "Tandai sebagai Selesai?",
+        text: "Kampanye akan ditandai sebagai selesai dan tidak akan menerima donasi baru.",
+        icon: "info",
+        buttons: {
+            cancel: {
+                text: "Batal",
+                value: false,
+                visible: true,
+                className: "btn btn-secondary",
+                closeModal: true,
+            },
+            confirm: {
+                text: "Ya, tandai selesai!",
+                value: true,
+                visible: true,
+                className: "btn btn-primary",
+                closeModal: true
             }
-        }).then((willConfirm) => {
-            if (willConfirm) {
-                form.submit();
-            }
-        });
-    });
-    
-    // Inisialisasi SweetAlert untuk notifikasi sukses
-    if ($('#success-message').length > 0 && $('#success-message').text().trim() !== '') {
-        swal({
-            title: 'Berhasil!',
-            text: $('#success-message').text(),
-            icon: 'success',
-            buttons: {
-                confirm: {
-                    className: 'btn btn-success'
-                }
-            }
-        });
+        },
+        closeOnClickOutside: false,
+        closeOnEsc: false
     }
-    
-    // Inisialisasi SweetAlert untuk notifikasi error
-    if ($('#error-message').length > 0 && $('#error-message').text().trim() !== '') {
-        swal({
-            title: 'Error!',
-            text: $('#error-message').text(),
-            icon: 'error',
-            buttons: {
-                confirm: {
-                    className: 'btn btn-danger'
-                }
-            }
-        });
+};
+
+// Fungsi helper untuk konfirmasi penghapusan
+function confirmDelete(message = null) {
+    const config = { ...sweetAlertConfig.delete };
+    if (message) {
+        config.text = message;
+    }
+    return swal(config);
+}
+
+// Fungsi helper untuk notifikasi sukses
+function showSuccess(message) {
+    const config = { ...sweetAlertConfig.success };
+    config.text = message;
+    return swal(config);
+}
+
+// Fungsi helper untuk notifikasi error
+function showError(message) {
+    const config = { ...sweetAlertConfig.error };
+    config.text = message;
+    return swal(config);
+}
+
+// Fungsi helper untuk konfirmasi publikasi
+function confirmPublish(message = null) {
+    const config = { ...sweetAlertConfig.publish };
+    if (message) {
+        config.text = message;
+    }
+    return swal(config);
+}
+
+// Fungsi helper untuk konfirmasi selesai
+function confirmComplete(message = null) {
+    const config = { ...sweetAlertConfig.complete };
+    if (message) {
+        config.text = message;
+    }
+    return swal(config);
+    }
+
+// Inisialisasi Sweet Alert untuk notifikasi sistem
+$(document).ready(function() {
+    // Handle success message
+    const successMessage = $('#success-message').text();
+    if (successMessage && successMessage.trim() !== '') {
+        showSuccess(successMessage);
+    }
+
+    // Handle error message
+    const errorMessage = $('#error-message').text();
+    if (errorMessage && errorMessage.trim() !== '') {
+        showError(errorMessage);
     }
 });

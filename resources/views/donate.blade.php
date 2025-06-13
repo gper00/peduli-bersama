@@ -1,9 +1,10 @@
 @extends('layouts.app')
+@php($hasHero = false) @endphp
 
 @section('title', 'Donasi - ' . $campaign->title . ' | Peduli Bersama')
 
 @section('content')
-<div class="bg-gray-50 py-10">
+<div class="bg-gray-50 py-10 pt-28">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="p-6">
@@ -51,7 +52,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <span class="text-gray-500 sm:text-sm font-medium">Rp</span>
                             </div>
-                            <input type="number" name="amount" id="amount" min="10000" value="{{ old('amount', 50000) }}" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-12 pr-12 sm:text-sm border-blue-200 rounded-md py-3" placeholder="Masukkan nominal donasi" required>
+                            <input type="number" name="amount" id="amount" min="10000" value="{{ old('amount', 50000) }}" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-12 pr-12 sm:text-sm border border-gray-400 rounded-md py-3" placeholder="Masukkan nominal donasi" required>
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <span class="text-gray-500 sm:text-sm">.00</span>
                             </div>
@@ -69,7 +70,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <div class="col-span-1 md:col-span-2">
                                 <label for="donor_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                                <input type="text" name="donor_name" id="donor_name" value="{{ auth()->check() ? auth()->user()->name : old('donor_name') }}" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-blue-200 rounded-md py-2 px-3" required>
+                                <input type="text" name="donor_name" id="donor_name" value="{{ auth()->check() ? auth()->user()->name : old('donor_name') }}" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border border-gray-400 rounded-md py-2 px-3" required>
                                 @error('donor_name')
                                     <p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>
                                 @enderror
@@ -77,7 +78,7 @@
 
                             <div>
                                 <label for="donor_email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input type="email" name="donor_email" id="donor_email" value="{{ auth()->check() ? auth()->user()->email : old('donor_email') }}" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-blue-200 rounded-md py-2 px-3" required>
+                                <input type="email" name="donor_email" id="donor_email" value="{{ auth()->check() ? auth()->user()->email : old('donor_email') }}" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border border-gray-400 rounded-md py-2 px-3" required>
                                 @error('donor_email')
                                     <p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>
                                 @enderror
@@ -85,7 +86,8 @@
 
                             <div>
                                 <label for="donor_phone" class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon</label>
-                                <input type="tel" name="donor_phone" id="donor_phone" value="{{ auth()->check() && auth()->user()->phone_number ? auth()->user()->phone_number : old('donor_phone') }}" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-blue-200 rounded-md py-2 px-3" required>
+                                <input type="tel" name="donor_phone" id="donor_phone" value="{{ auth()->check() && auth()->user()->phone_number ? auth()->user()->phone_number : old('donor_phone') }}" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border border-gray-400 rounded-md py-2 px-3" required>
+                                <input type="tel" name="donor_phone" id="donor_phone" value="{{ auth()->check() && auth()->user()->phone_number ? auth()->user()->phone_number : old('donor_phone') }}" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-3" required>
                                 @error('donor_phone')
                                     <p class="mt-1 text-sm text-red-600 font-medium">{{ $message }}</p>
                                 @enderror
@@ -94,16 +96,16 @@
                             <!-- Field pesan untuk penggalang dana dihapus -->
                         </div>
                     </div>
-                    
+
                     <!-- Kritik & Saran -->
                     <div class="mb-6 bg-blue-50 p-4 rounded-lg">
                         <h3 class="text-lg font-semibold text-gray-800 mb-3">Kritik & Saran <span class="text-sm font-normal text-gray-500">(Opsional)</span></h3>
                         <p class="text-sm text-gray-600 mb-3">Masukan Anda sangat berharga untuk meningkatkan kampanye ini dan platform kami. Kritik dan saran hanya akan dilihat oleh admin dan penggalang dana.</p>
-                        
+
                         <div class="grid grid-cols-1 gap-4">
                             <div>
                                 <label for="feedback_subject" class="block text-sm font-medium text-gray-700 mb-1">Subjek</label>
-                                <select name="feedback_subject" id="feedback_subject" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-blue-200 rounded-md py-2">
+                                <select name="feedback_subject" id="feedback_subject" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md py-2">
                                     <option value="">Pilih subjek...</option>
                                     <option value="saran" {{ old('feedback_subject') == 'saran' ? 'selected' : '' }}>Saran Perbaikan</option>
                                     <option value="kritik" {{ old('feedback_subject') == 'kritik' ? 'selected' : '' }}>Kritik</option>
@@ -111,15 +113,15 @@
                                     <option value="lainnya" {{ old('feedback_subject') == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <label for="feedback_message" class="block text-sm font-medium text-gray-700 mb-1">Pesan</label>
-                                <textarea name="feedback_message" id="feedback_message" rows="3" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-blue-200 rounded-md py-2 px-3">{{ old('feedback_message') }}</textarea>
+                                <textarea name="feedback_message" id="feedback_message" rows="3" class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-3">{{ old('feedback_message') }}</textarea>
                             </div>
-                            
+
                             <!-- Opsi buat sebagai pesan pribadi dihapus karena semua kritik & saran hanya dilihat oleh admin dan penggalang dana -->
                         </div>
-                    
+
                     <!-- Persetujuan -->
                     <div class="mb-6">
                         <div class="flex items-start mb-4">
@@ -132,7 +134,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Metode Pembayaran -->
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">Metode Pembayaran</h3>
@@ -189,14 +191,14 @@
                     </div>
 
                     <div class="mb-6">
-                        <p class="text-center text-sm text-gray-600 mb-4">
-                            Dengan melakukan donasi, Anda menyetujui <a href="{{ route('terms') }}" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank">Syarat & Ketentuan</a> dan <a href="{{ route('privacy') }}" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank">Kebijakan Privasi</a> Peduli Bersama.
-                        </p>
-                        
+
                         <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-4 px-6 rounded-md shadow-md hover:shadow-lg transition duration-300 flex items-center justify-center text-lg">
                             <i class="fas fa-heart mr-2 animate-pulse"></i>
                             Lanjutkan Donasi
                         </button>
+                        <p class="text-center text-sm text-gray-600 mt-4">
+                            Dengan melakukan donasi, Anda menyetujui <a href="{{ route('terms') }}" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank">Syarat & Ketentuan</a> dan <a href="{{ route('privacy') }}" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank">Kebijakan Privasi</a> Peduli Bersama.
+                        </p>
                     </div>
                 </form>
             </div>

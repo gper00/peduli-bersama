@@ -23,7 +23,7 @@
                 <i class="flaticon-right-arrow"></i>
             </li>
             <li class="nav-item">
-                <a href="{{ route('dashboard.messages.index') }}">Kelola Pesan Masuk</a>
+                <a href="{{ route('dashboard.messages.index') }}">Pesan Masuk</a>
             </li>
             <li class="separator">
                 <i class="flaticon-right-arrow"></i>
@@ -47,7 +47,7 @@
                             <a href="mailto:{{ $message->email }}?subject=Re: {{ $message->subject }}" class="btn btn-info btn-sm">
                                 <i class="fa fa-reply mr-1"></i> Balas Pesan
                             </a>
-                            <form action="{{ route('dashboard.messages.toggle-read', $message->id) }}" method="POST" class="d-inline">
+                            <form action="{{ route('dashboard.messages.toggle-read', $message->id) }}" method="POST" class="d-inline toggle-read-form">
                                 @csrf
                                 <button type="submit" class="btn btn-{{ $message->is_read ? 'warning' : 'success' }} btn-sm ml-1">
                                     <i class="fa {{ $message->is_read ? 'fa-envelope' : 'fa-envelope-open' }} mr-1"></i>
@@ -134,7 +134,7 @@
                                 <i class="fa fa-reply mr-1"></i> Balas Pesan
                             </a>
                             @if(!$message->is_read)
-                            <form action="{{ route('dashboard.messages.toggle-read', $message->id) }}" method="POST" class="d-inline ml-1">
+                            <form action="{{ route('dashboard.messages.toggle-read', $message->id) }}" method="POST" class="d-inline ml-1 toggle-read-form">
                                 @csrf
                                 <button type="submit" class="btn btn-success">
                                     <i class="fas fa-check mr-1"></i> Tandai Sudah Dibaca
@@ -180,6 +180,42 @@
                 }
             });
         }
+
+        // Konfirmasi toggle status pesan
+        $('.toggle-read-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const isRead = $(this).find('button').hasClass('btn-success');
+            const action = isRead ? 'menandai sebagai belum dibaca' : 'menandai sebagai sudah dibaca';
+
+            swal({
+                title: "Konfirmasi",
+                text: "Apakah Anda yakin ingin " + action + "?",
+                icon: "info",
+                buttons: {
+                    cancel: {
+                        text: "Batal",
+                        value: false,
+                        visible: true,
+                        className: "btn btn-secondary",
+                        closeModal: true,
+                    },
+                    confirm: {
+                        text: "Ya, konfirmasi!",
+                        value: true,
+                        visible: true,
+                        className: "btn btn-primary",
+                        closeModal: true
+                    }
+                },
+                closeOnClickOutside: false,
+                closeOnEsc: false
+            }).then((willToggle) => {
+                if (willToggle) {
+                    form.submit();
+                }
+            });
+        });
     });
 </script>
 @endsection

@@ -24,6 +24,7 @@ class UserSeeder extends Seeder
                 'phone_number' => '081234567890',
                 'bio' => 'Administrator of Peduli Bersama platform',
                 'is_active' => true,
+                'image' => null,
             ],
             [
                 'name' => 'Donor User',
@@ -35,6 +36,7 @@ class UserSeeder extends Seeder
                 'phone_number' => '082345678901',
                 'bio' => 'Regular donor on Peduli Bersama',
                 'is_active' => true,
+                'image' => null,
             ],
             [
                 'name' => 'Creator User',
@@ -46,6 +48,31 @@ class UserSeeder extends Seeder
                 'phone_number' => '083456789012',
                 'bio' => 'Campaign creator on Peduli Bersama',
                 'is_active' => true,
+                'image' => null,
+            ],
+            [
+                'name' => 'Donor 2',
+                'username' => 'donor2',
+                'email' => 'donor2@pedulibersama.com',
+                'password' => Hash::make('donor2'),
+                'role' => 'donor',
+                'email_verified_at' => now(),
+                'phone_number' => '084567890123',
+                'bio' => 'Another regular donor on Peduli Bersama',
+                'is_active' => true,
+                'image' => null,
+            ],
+            [
+                'name' => 'Creator 2',
+                'username' => 'creator2',
+                'email' => 'creator2@pedulibersama.com',
+                'password' => Hash::make('creator2'),
+                'role' => 'creator',
+                'email_verified_at' => now(),
+                'phone_number' => '085678901234',
+                'bio' => 'Another campaign creator on Peduli Bersama',
+                'is_active' => true,
+                'image' => null,
             ],
         ];
 

@@ -127,7 +127,7 @@
                             <div class="col-7 col-stats">
                                 <div class="numbers">
                                     <p class="card-category">Kritik & Saran</p>
-                                    <h4 class="card-title">{{ \App\Models\Feedback::where('user_id', auth()->id())->count() }}</h4>
+                                    <h4 class="card-title">{{ \App\Models\Feedback::count() }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -172,7 +172,8 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ route('dashboard.campaigns.show', $campaign->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
+                                            <a href="{{ route('dashboard.campaigns.show', $campaign->slug) }}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
+                                            <a href="{{ route('dashboard.campaigns.edit', $campaign->slug) }}" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></a>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -185,31 +186,88 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
+                        <div class="card-title">5 Donasi Terbaru</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Donatur</th>
+                                        <th>Kampanye</th>
+                                        <th>Jumlah</th>
+                                        <th>Tanggal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach(\App\Models\Donation::with('user', 'campaign')->where('status', 'success')->latest()->take(5)->get() as $donation)
+                                    <tr>
+                                        <td>{{ $donation->user ? $donation->user->name : ($donation->donor_name ?? 'Anonim') }}</td>
+                                        <td>{{ $donation->campaign ? $donation->campaign->title : '-' }}</td>
+                                        <td>Rp {{ number_format($donation->amount, 0, ',', '.') }}</td>
+                                        <td>{{ $donation->created_at->format('d M Y, H:i') }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
                         <div class="card-title">Kritik & Saran Terbaru</div>
                     </div>
                     <div class="card-body">
-                        <div class="list-group">
-                            @foreach(\App\Models\Feedback::latest()->take(5)->get() as $feedback)
-                            <a href="{{ route('dashboard.feedbacks.show', $feedback->id) }}" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h5 class="mb-1">{{ Str::limit($feedback->subject, 25) }}</h5>
-                                    <small>{{ $feedback->created_at->diffForHumans() }}</small>
-                                </div>
-                                <p class="mb-1">{{ Str::limit($feedback->message, 50) }}</p>
-                                <small>
-                                    @if($feedback->status == 'unread')
-                                    <span class="badge badge-warning">Belum Dibaca</span>
-                                    @elseif($feedback->status == 'in_progress')
-                                    <span class="badge badge-info">Sedang Diproses</span>
-                                    @elseif($feedback->status == 'responded')
-                                    <span class="badge badge-success">Telah Direspon</span>
-                                    @else
-                                    <span class="badge badge-secondary">Ditutup</span>
-                                    @endif
-                                </small>
-                            </a>
-                            @endforeach
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Subjek</th>
+                                        <th>Pesan</th>
+                                        <th>Status</th>
+                                        <th>Waktu</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach(\App\Models\Feedback::latest()->take(5)->get() as $feedback)
+                                    <tr>
+                                        <td>{{ Str::limit($feedback->subject, 25) }}</td>
+                                        <td>{{ Str::limit($feedback->message, 50) }}</td>
+                                        <td>
+                                            @if($feedback->status == 'unread')
+                                            <span class="badge badge-warning">Belum Dibaca</span>
+                                            @elseif($feedback->status == 'in_progress')
+                                            <span class="badge badge-info">Sedang Diproses</span>
+                                            @elseif($feedback->status == 'responded')
+                                            <span class="badge badge-success">Telah Direspon</span>
+                                            @else
+                                            <span class="badge badge-secondary">Ditutup</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $feedback->created_at->diffForHumans() }}</td>
+                                        <td><a href="{{ route('dashboard.feedbacks.show', $feedback->id) }}" class="btn btn-sm btn-primary">Lihat</a></td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Statistik Donasi 6 Bulan Terakhir</div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="donationChart" height="100"></canvas>
                     </div>
                 </div>
             </div>
@@ -340,8 +398,8 @@
                                         </td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="{{ route('dashboard.campaigns.show', $campaign->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
-                                                <a href="{{ route('dashboard.campaigns.edit', $campaign->id) }}" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></a>
+                                                <a href="{{ route('dashboard.campaigns.show', $campaign->slug) }}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
+                                                <a href="{{ route('dashboard.campaigns.edit', $campaign->slug) }}" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></a>
                                                 <a href="{{ route('dashboard.reports.campaign', $campaign->id) }}" class="btn btn-success btn-sm"><i class="fa fa-chart-bar"></i></a>
                                             </div>
                                         </td>
@@ -357,126 +415,7 @@
                 </div>
             </div>
         </div>
-        @else
-        <!-- Donor Dashboard Content -->
-        {{-- <div class="row">
-            <div class="col-sm-6 col-md-4">
-                <div class="card card-stats card-success card-round">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-5">
-                                <div class="icon-big text-center">
-                                    <i class="fas fa-hand-holding-heart"></i>
-                                </div>
-                            </div>
-                            <div class="col-7 col-stats">
-                                <div class="numbers">
-                                    <p class="card-category">Donasi Saya</p>
-                                    <h4 class="card-title">{{ \App\Models\Donation::where('user_id', auth()->id())->where('status', 'success')->count() }}</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="card card-stats card-primary card-round">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-5">
-                                <div class="icon-big text-center">
-                                    <i class="fas fa-money-check-alt"></i>
-                                </div>
-                            </div>
-                            <div class="col-7 col-stats">
-                                <div class="numbers">
-                                    <p class="card-category">Total Donasi</p>
-                                    <h4 class="card-title">Rp {{ number_format(\App\Models\Donation::where('user_id', auth()->id())->where('status', 'success')->sum('amount'), 0, ',', '.') }}</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="card card-stats card-info card-round">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-5">
-                                <div class="icon-big text-center">
-                                    <i class="fas fa-bullhorn"></i>
-                                </div>
-                            </div>
-                            <div class="col-7 col-stats">
-                                <div class="numbers">
-                                    <p class="card-category">Kampanye Dibantu</p>
-                                    <h4 class="card-title">{{ \App\Models\Donation::where('user_id', auth()->id())->where('status', 'success')->distinct('campaign_id')->count('campaign_id') }}</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Riwayat Donasi Saya</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Kampanye</th>
-                                        <th>Tanggal</th>
-                                        <th>Jumlah</th>
-                                        <th>Status</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach(\App\Models\Donation::where('user_id', auth()->id())->latest()->take(5)->get() as $donation)
-                                    <tr>
-                                        <td>{{ Str::limit($donation->campaign->title, 30) }}</td>
-                                        <td>{{ $donation->created_at->format('d M Y, H:i') }}</td>
-                                        <td>Rp {{ number_format($donation->amount, 0, ',', '.') }}</td>
-                                        <td>
-                                            @if($donation->status == 'success')
-                                            <span class="badge badge-success">Berhasil</span>
-                                            @elseif($donation->status == 'pending')
-                                            <span class="badge badge-warning">Menunggu</span>
-                                            @elseif($donation->status == 'processing')
-                                            <span class="badge badge-info">Diproses</span>
-                                            @elseif($donation->status == 'failed')
-                                            <span class="badge badge-danger">Gagal</span>
-                                            @elseif($donation->status == 'expired')
-                                            <span class="badge badge-secondary">Kedaluwarsa</span>
-                                            @elseif($donation->status == 'refunded')
-                                            <span class="badge badge-dark">Dikembalikan</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('dashboard.donations.show', $donation->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a>
-                                            @if($donation->status == 'success')
-                                            <a href="{{ route('dashboard.donations.receipt', $donation->id) }}" class="btn btn-info btn-sm" target="_blank"><i class="fa fa-file-invoice"></i></a>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="d-flex justify-content-center mt-3">
-                            <a href="{{ route('dashboard.donations.my') }}" class="btn btn-primary">Lihat Semua Donasi</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-        {{-- @elseif(auth()->user()->role == 'donor') --}}
+        @elseif(auth()->user()->role == 'donor')
         <div class="row">
             <div class="col-sm-6 col-md-4">
                 <div class="card card-stats card-primary card-round">
@@ -599,4 +538,37 @@
         @endif
     </div>
 </div>
+@endsection
+
+@section('scripts')
+@parent
+@if(auth()->user()->role == 'admin')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('donationChart').getContext('2d');
+    const donationChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode($months ?? ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun"]) !!},
+            datasets: [{
+                label: 'Jumlah Donasi',
+                data: {!! json_encode($donationsByMonth ?? [12, 19, 7, 15, 10, 22]) !!},
+                backgroundColor: 'rgba(30, 64, 175, 0.7)',
+                borderColor: 'rgba(30, 64, 175, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+@endif
 @endsection

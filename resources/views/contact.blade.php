@@ -1,10 +1,11 @@
+@php($hasHero = true) @endphp
 @extends('layouts.app')
 
 @section('title', 'Hubungi Kami | Peduli Bersama')
 
 @section('content')
 <!-- Hero Section -->
-<div class="bg-gradient-to-r from-blue-700 to-blue-900 text-white relative overflow-hidden">
+<div class="bg-gradient-to-r from-blue-700 to-blue-900 text-white relative overflow-hidden pt-20">
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[size:16px]"></div>
     <div class="absolute h-full w-full bg-gradient-to-t from-blue-900/50"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative">
@@ -204,40 +205,172 @@
 </div>
 
 <!-- FAQ Section -->
-<div class="bg-gray-50 py-16">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Pertanyaan Umum</h2>
-            <p class="text-lg text-gray-600">
-                Beberapa pertanyaan yang sering ditanyakan oleh pengguna kami
-            </p>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Pertanyaan yang Sering Diajukan</h2>
+            <p class="text-lg text-gray-600">Temukan jawaban untuk pertanyaan umum tentang platform kami</p>
         </div>
 
-        <div class="space-y-6">
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <button class="w-full px-6 py-4 text-left focus:outline-none">
-                    <div class="flex items-center justify-between">
-                        <span class="text-lg font-medium text-gray-900">Berapa lama waktu respons?</span>
-                        <i class="fas fa-chevron-down text-gray-500"></i>
+        <div class="max-w-3xl mx-auto">
+            <div class="space-y-4" x-data="{ active: null }">
+                <!-- FAQ Item 1 -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <button
+                        class="w-full px-6 py-4 text-left focus:outline-none"
+                        @click="active = active === 1 ? null : 1"
+                        :class="{ 'bg-gray-50': active === 1 }"
+                    >
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">Berapa lama waktu yang dibutuhkan untuk verifikasi campaign?</h3>
+                            <i class="fas fa-chevron-down transform transition-transform duration-200" :class="{ 'rotate-180': active === 1 }"></i>
+                        </div>
+                    </button>
+                    <div
+                        class="px-6 overflow-hidden transition-all duration-300 ease-in-out"
+                        x-show="active === 1"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 transform -translate-y-2"
+                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 transform translate-y-0"
+                        x-transition:leave-end="opacity-0 transform -translate-y-2"
+                    >
+                        <p class="text-gray-600 pb-4">Tim kami akan memverifikasi campaign dalam waktu 1-2 hari kerja. Proses ini meliputi verifikasi identitas, dokumen pendukung, dan kelayakan campaign.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <button
+                        class="w-full px-6 py-4 text-left focus:outline-none"
+                        @click="active = active === 2 ? null : 2"
+                        :class="{ 'bg-gray-50': active === 2 }"
+                    >
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">Bagaimana cara melacak donasi yang telah saya berikan?</h3>
+                            <i class="fas fa-chevron-down transform transition-transform duration-200" :class="{ 'rotate-180': active === 2 }"></i>
+                        </div>
+                    </button>
+                    <div
+                        class="px-6 overflow-hidden transition-all duration-300 ease-in-out"
+                        x-show="active === 2"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 transform -translate-y-2"
+                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 transform translate-y-0"
+                        x-transition:leave-end="opacity-0 transform -translate-y-2"
+                    >
+                        <p class="text-gray-600 pb-4">Anda dapat melacak donasi melalui dashboard akun Anda. Setiap donasi akan tercatat dengan detail campaign, jumlah, dan status pencairan dana.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <button
+                        class="w-full px-6 py-4 text-left focus:outline-none"
+                        @click="active = active === 3 ? null : 3"
+                        :class="{ 'bg-gray-50': active === 3 }"
+                    >
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">Apakah ada biaya yang dikenakan untuk menggunakan platform ini?</h3>
+                            <i class="fas fa-chevron-down transform transition-transform duration-200" :class="{ 'rotate-180': active === 3 }"></i>
                     </div>
                 </button>
-                <div class="px-6 pb-4">
-                    <p class="text-gray-600">Kami berusaha merespons semua pesan dalam waktu 24 jam kerja.</p>
+                    <div
+                        class="px-6 overflow-hidden transition-all duration-300 ease-in-out"
+                        x-show="active === 3"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 transform -translate-y-2"
+                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 transform translate-y-0"
+                        x-transition:leave-end="opacity-0 transform -translate-y-2"
+                    >
+                        <p class="text-gray-600 pb-4">Kami mengenakan biaya administrasi sebesar 5% dari total donasi yang terkumpul. Biaya ini digunakan untuk operasional platform dan pengembangan fitur.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <button
+                        class="w-full px-6 py-4 text-left focus:outline-none"
+                        @click="active = active === 4 ? null : 4"
+                        :class="{ 'bg-gray-50': active === 4 }"
+                    >
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">Bagaimana proses pencairan dana untuk campaign?</h3>
+                            <i class="fas fa-chevron-down transform transition-transform duration-200" :class="{ 'rotate-180': active === 4 }"></i>
+                        </div>
+                    </button>
+                    <div
+                        class="px-6 overflow-hidden transition-all duration-300 ease-in-out"
+                        x-show="active === 4"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 transform -translate-y-2"
+                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 transform translate-y-0"
+                        x-transition:leave-end="opacity-0 transform -translate-y-2"
+                    >
+                        <p class="text-gray-600 pb-4">Pencairan dana dapat dilakukan setelah campaign mencapai target atau berakhir. Proses pencairan membutuhkan waktu 3-5 hari kerja setelah permintaan diajukan.</p>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <button class="w-full px-6 py-4 text-left focus:outline-none">
-                    <div class="flex items-center justify-between">
-                        <span class="text-lg font-medium text-gray-900">Bagaimana cara melacak donasi saya?</span>
-                        <i class="fas fa-chevron-down text-gray-500"></i>
+                <!-- FAQ Item 5 -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <button
+                        class="w-full px-6 py-4 text-left focus:outline-none"
+                        @click="active = active === 5 ? null : 5"
+                        :class="{ 'bg-gray-50': active === 5 }"
+                    >
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">Apakah donasi saya aman?</h3>
+                            <i class="fas fa-chevron-down transform transition-transform duration-200" :class="{ 'rotate-180': active === 5 }"></i>
+                        </div>
+                    </button>
+                    <div
+                        class="px-6 overflow-hidden transition-all duration-300 ease-in-out"
+                        x-show="active === 5"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 transform -translate-y-2"
+                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 transform translate-y-0"
+                        x-transition:leave-end="opacity-0 transform -translate-y-2"
+                    >
+                        <p class="text-gray-600 pb-4">Ya, kami menggunakan sistem keamanan terenkripsi dan bekerja sama dengan payment gateway terpercaya. Semua transaksi dipantau dan dilindungi.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 6 -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <button
+                        class="w-full px-6 py-4 text-left focus:outline-none"
+                        @click="active = active === 6 ? null : 6"
+                        :class="{ 'bg-gray-50': active === 6 }"
+                    >
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">Bagaimana jika campaign tidak mencapai target?</h3>
+                            <i class="fas fa-chevron-down transform transition-transform duration-200" :class="{ 'rotate-180': active === 6 }"></i>
                     </div>
                 </button>
-                <div class="px-6 pb-4">
-                    <p class="text-gray-600">Anda dapat melacak donasi melalui dashboard akun Anda atau menghubungi tim support kami.</p>
+                    <div
+                        class="px-6 overflow-hidden transition-all duration-300 ease-in-out"
+                        x-show="active === 6"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 transform -translate-y-2"
+                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 transform translate-y-0"
+                        x-transition:leave-end="opacity-0 transform -translate-y-2"
+                    >
+                        <p class="text-gray-600 pb-4">Jika campaign tidak mencapai target, dana tetap dapat dicairkan sesuai dengan jumlah yang terkumpul. Namun, kami sarankan untuk memperpanjang periode campaign.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 @endsection

@@ -1,5 +1,5 @@
 <!-- Navigation -->
-<nav class="bg-white shadow-sm sticky top-0 z-50">
+<nav class="bg-white bg-gradient-to-r from-blue-700 to-blue-900 text-white shadow-sm sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex items-center">
@@ -17,9 +17,10 @@
                 </div>
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:items-center">
-                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium">
+                <a href="{{ route('login', ['redirect' => url()->current()]) }}"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium">
                     Login
-                </button>
+                </a>
             </div>
             <div class="-mr-2 flex items-center sm:hidden">
                 <button type="button"

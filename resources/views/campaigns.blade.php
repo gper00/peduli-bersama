@@ -1,17 +1,18 @@
+@php($hasHero = true)
 @extends('layouts.app')
 
 @section('title', 'Daftar Kampanye | Peduli Bersama')
 
 @section('content')
 <!-- Hero Banner -->
-<div class="bg-gradient-to-r from-blue-800 to-blue-900 text-white py-12">
+<div class="bg-gradient-to-r from-blue-800 to-blue-900 text-white pt-36 pb-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="md:flex md:items-center md:justify-between">
             <div class="md:w-1/2 mb-8 md:mb-0">
                 <h1 class="text-3xl md:text-4xl font-bold mb-4">Kampanye Penggalangan Dana</h1>
                 <p class="text-blue-100 text-lg mb-6">Temukan kampanye yang sesuai dengan kepedulian Anda. Setiap donasi kecil dapat membawa perubahan besar bagi mereka yang membutuhkan.</p>
                 <div class="flex flex-wrap gap-3">
-                    <a href="{{ route('login') }}" class="bg-white text-blue-800 hover:bg-blue-100 font-medium py-2 px-6 rounded-md shadow-sm transition duration-300 flex items-center">
+                    <a href="{{ route('login', ['redirect' => url()->current()]) }}" class="bg-white text-blue-800 hover:bg-blue-100 font-medium py-2 px-6 rounded-md shadow-sm transition duration-300 flex items-center">
                         <i class="fas fa-plus-circle mr-2"></i> Mulai Galang Dana
                     </a>
                     <a href="#filter-section" class="bg-blue-700 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-md shadow-sm transition duration-300 flex items-center">
@@ -128,7 +129,7 @@
                             @if($campaign->cover_image && Storage::disk('public')->exists($campaign->cover_image))
                                 <img src="{{ Storage::url($campaign->cover_image) }}" alt="{{ $campaign->title }}" class="w-full h-48 object-cover object-center">
                             @else
-                                <img src="{{ asset('storage/default/campaign.jpg') }}" alt="{{ $campaign->title }}" class="w-full h-48 object-cover object-center">
+                                <img src="{{ asset('storage/default/image.jpg') }}" alt="{{ $campaign->title }}" class="w-full h-48 object-cover object-center">
                             @endif
                             @if($campaign->featured)
                             <div class="absolute top-2 left-2 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded">

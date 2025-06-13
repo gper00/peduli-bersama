@@ -8,7 +8,7 @@
 <div class="content">
     <div class="page-inner">
         <div class="page-header">
-            <h4 class="page-title">Campaign Details</h4>
+            <h4 class="page-title">Detail Kampanye</h4>
             <ul class="breadcrumbs">
                 <li class="nav-home">
                     <a href="{{ route('dashboard.index') }}">
@@ -19,13 +19,13 @@
                     <i class="flaticon-right-arrow"></i>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('dashboard.campaigns.index') }}">Campaigns</a>
+                    <a href="{{ route('dashboard.campaigns.index') }}">Kampanye</a>
                 </li>
                 <li class="separator">
                     <i class="flaticon-right-arrow"></i>
                 </li>
                 <li class="nav-item">
-                    Details
+                    Detail
                 </li>
             </ul>
         </div>
@@ -35,7 +35,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
-                            <h4 class="card-title">Campaign Information</h4>
+                            <h4 class="card-title">Informasi Kampanye</h4>
                             <div class="ml-auto">
                                 <a href="{{ route('dashboard.campaigns.edit', $campaign->slug) }}" class="btn btn-primary btn-sm">
                                     <i class="fa fa-edit"></i> Edit
@@ -56,43 +56,43 @@
 
                         <div class="row mt-3">
                             <div class="col-md-4">
-                                <p class="text-muted mb-1">Category</p>
+                                <p class="text-muted mb-1">Kategori</p>
                                 <p class="font-weight-bold">{{ $campaign->category->name ?? '-' }}</p>
                             </div>
                             <div class="col-md-4">
                                 <p class="text-muted mb-1">Status</p>
                                 <p>
                                     @if($campaign->status == 'active')
-                                        <span class="badge badge-success">Active</span>
+                                        <span class="badge badge-success">Aktif</span>
                                     @elseif($campaign->status == 'completed')
-                                        <span class="badge badge-info">Completed</span>
+                                        <span class="badge badge-info">Selesai</span>
                                     @elseif($campaign->status == 'rejected')
-                                        <span class="badge badge-danger">Rejected</span>
+                                        <span class="badge badge-danger">Ditolak</span>
                                     @else
                                         <span class="badge badge-secondary">Draft</span>
                                     @endif
                                 </p>
                             </div>
                             <div class="col-md-4">
-                                <p class="text-muted mb-1">Created By</p>
+                                <p class="text-muted mb-1">Dibuat Oleh</p>
                                 <p class="font-weight-bold">{{ $campaign->user->name ?? '-' }}</p>
                             </div>
                         </div>
 
                         <div class="row mt-2">
                             <div class="col-md-6">
-                                <p class="text-muted mb-1">Start Date</p>
+                                <p class="text-muted mb-1">Tanggal Mulai</p>
                                 <p class="font-weight-bold">{{ \Carbon\Carbon::parse($campaign->start_date)->format('d M Y') }}</p>
                             </div>
                             <div class="col-md-6">
-                                <p class="text-muted mb-1">End Date</p>
+                                <p class="text-muted mb-1">Tanggal Selesai</p>
                                 <p class="font-weight-bold">{{ \Carbon\Carbon::parse($campaign->end_date)->format('d M Y') }}</p>
                             </div>
                         </div>
 
                         <div class="row mt-3">
                             <div class="col-12">
-                                <p class="text-muted mb-1">Fundraising Progress</p>
+                                <p class="text-muted mb-1">Progres Fundraising</p>
                                 <div class="progress mb-2" style="height: 10px">
                                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ $campaign->progress_percentage }}%"
                                          aria-valuenow="{{ $campaign->progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
@@ -107,28 +107,28 @@
 
                         <div class="row mt-3">
                             <div class="col-md-4">
-                                <p class="text-muted mb-1">Days Remaining</p>
+                                <p class="text-muted mb-1">Sisa Hari</p>
                                 <p class="font-weight-bold">
                                     @if($campaign->days_remaining > 0)
-                                        {{ $campaign->days_remaining }} days
+                                        {{ $campaign->days_remaining }} hari
                                     @else
-                                        <span class="text-danger">Ended</span>
+                                        <span class="text-danger">Berakhir</span>
                                     @endif
                                 </p>
                             </div>
                             <div class="col-md-4">
-                                <p class="text-muted mb-1">Donors</p>
+                                <p class="text-muted mb-1">Donatur</p>
                                 <p class="font-weight-bold">{{ $campaign->donor_count }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p class="text-muted mb-1">Donations</p>
+                                <p class="text-muted mb-1">Donasi</p>
                                 <p class="font-weight-bold">{{ $campaign->donations->count() }}</p>
                             </div>
                         </div>
 
                         <div class="separator-solid mt-3 mb-4"></div>
 
-                        <h4>Description</h4>
+                        <h4>Deskripsi</h4>
                         <div class="campaign-description mt-3">
                             {!! $campaign->description !!}
                         </div>
@@ -138,7 +138,7 @@
                 @if($campaign->updates->count() > 0)
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Campaign Updates</h4>
+                        <h4 class="card-title">Pembaruan Kampanye</h4>
                     </div>
                     <div class="card-body">
                         @foreach($campaign->updates as $update)
@@ -164,9 +164,7 @@
                     </div>
                     <div class="card-body">
                         @php
-                        $feedbacks = \App\Models\Feedback::where('campaign_id', $campaign->id)
-                            ->orderBy('created_at', 'desc')
-                            ->get();
+                        $feedbacks = $campaign->feedbacks->sortByDesc('created_at');
                         @endphp
 
                         @if($feedbacks->count() > 0)
@@ -175,6 +173,7 @@
                                     <thead>
                                         <tr>
                                             <th>Donatur</th>
+                                            <th>Subjek</th>
                                             <th>Tanggal</th>
                                             <th>Pesan</th>
                                             <th>Status</th>
@@ -185,14 +184,19 @@
                                         @foreach($feedbacks as $feedback)
                                         <tr>
                                             <td>
-                                                <a href="{{ route('dashboard.users.show', ['user' => $feedback->user_id]) }}">
-                                                    {{ $feedback->user->name }}
-                                                </a>
+                                                @if($feedback->user)
+                                                    <a href="{{ route('dashboard.users.show', ['user' => $feedback->user_id]) }}">
+                                                        {{ $feedback->user->name }}
+                                                    </a>
+                                                @else
+                                                    {{ $feedback->name ?? '-' }}
+                                                @endif
                                             </td>
+                                            <td>{{ $feedback->subject ?? '-' }}</td>
                                             <td>{{ $feedback->created_at->format('d M Y') }}</td>
                                             <td>
                                                 <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
-                                                    {{ Str::limit($feedback->message, 100) }}
+                                                    <span class="font-weight-bold">{{ $feedback->subject ? '['.$feedback->subject.'] ' : '' }}</span>{{ Str::limit($feedback->message, 100) }}
                                                 </div>
                                             </td>
                                             <td>
@@ -359,9 +363,9 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar avatar-sm mr-2">
-                                                    <img src="/storage/{{ $donation->user->image ?? 'default/user.jpg' }}" alt="" class="avatar-img rounded-circle">
+                                                    <img src="{{ $donation->user && $donation->user->image ? asset('storage/'. $donation->user->image) : asset('storage/default/user.jpg') }}" alt="" class="avatar-img rounded-circle">
                                                 </div>
-                                                <div>{{ $donation->user->name ?? 'Anonymous' }}</div>
+                                                <div>{{ $donation->user ? $donation->user->name : 'Anonymous' }}</div>
                                             </div>
                                         </td>
                                         <td>Rp {{ number_format($donation->amount) }}</td>
@@ -407,7 +411,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar avatar-sm mr-2">
-                                                    <img src="/storage/{{ $comment->user ? $comment->user->image : 'default/user.jpg' }}" alt="" class="avatar-img rounded-circle">
+                                                    <img src="{{ $comment->user && $comment->user->image ? asset('storage/'. $comment->user->image) : asset('storage/default/user.jpg') }}" alt="" class="avatar-img rounded-circle">
                                                 </div>
                                                 <div>{{ $comment->user ? $comment->user->name : 'Anonymous' }}</div>
                                             </div>
@@ -472,22 +476,8 @@
             e.preventDefault();
             const deleteForm = document.getElementById('delete-form');
 
-            swal({
-                title: "Apakah Anda yakin?",
-                text: "Anda akan menghapus campaign ini. Tindakan ini tidak dapat dibatalkan!",
-                type: "warning",
-                icon: "warning",
-                buttons: {
-                    confirm: {
-                        text: "Ya, hapus!",
-                        className: "btn btn-primary",
-                    },
-                    cancel: {
-                        visible: true,
-                        className: "btn btn-danger",
-                    },
-                },
-            }).then((willDelete) => {
+            confirmDelete("Anda akan menghapus kampanye ini. Tindakan ini tidak dapat dibatalkan!")
+                .then((willDelete) => {
                 if (willDelete) {
                     deleteForm.submit();
                 }
@@ -499,22 +489,8 @@
             e.preventDefault();
             const publishForm = document.getElementById('publish-form');
 
-            swal({
-                title: "Publish Campaign?",
-                text: "Campaign akan dipublikasikan dan terlihat oleh publik.",
-                type: "info",
-                icon: "info",
-                buttons: {
-                    confirm: {
-                        text: "Ya, publikasikan!",
-                        className: "btn btn-primary",
-                    },
-                    cancel: {
-                        visible: true,
-                        className: "btn btn-danger",
-                    },
-                },
-            }).then((willPublish) => {
+            confirmPublish()
+                .then((willPublish) => {
                 if (willPublish) {
                     publishForm.submit();
                 }
@@ -526,22 +502,8 @@
             e.preventDefault();
             const completeForm = document.getElementById('complete-form');
 
-            swal({
-                title: "Tandai sebagai Selesai?",
-                text: "Campaign akan ditandai sebagai selesai dan tidak akan menerima donasi baru.",
-                type: "info",
-                icon: "info",
-                buttons: {
-                    confirm: {
-                        text: "Ya, tandai selesai!",
-                        className: "btn btn-primary",
-                    },
-                    cancel: {
-                        visible: true,
-                        className: "btn btn-danger",
-                    },
-                },
-            }).then((willComplete) => {
+            confirmComplete()
+                .then((willComplete) => {
                 if (willComplete) {
                     completeForm.submit();
                 }

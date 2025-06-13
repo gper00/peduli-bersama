@@ -45,7 +45,7 @@ Route::post('/messages', [MessageController::class, 'store'])->name('messages.st
 Route::post('/campaigns/{slug}/comments', [CommentController::class, 'store'])->name('comments.store');
 
 // Public routes for donation process
-Route::get('/donate/{slug}', [App\Http\Controllers\PublicController::class, 'donateForm'])->name('public.donate');
+Route::get('/donate/{slug}', [App\Http\Controllers\PublicController::class, 'donateForm'])->middleware('auth')->name('public.donate');
 Route::post('/donate/{slug}', [App\Http\Controllers\PublicController::class, 'processDonation'])->name('public.processDonation');
 Route::get('/payment/{invoice}', [App\Http\Controllers\PublicController::class, 'paymentPage'])->name('donation.pay');
 Route::post('/payment/callback', [App\Http\Controllers\PublicController::class, 'paymentCallback'])->name('donation.callback');
@@ -72,7 +72,11 @@ Route::post('/register', [AuthController::class, 'store']);
 Route::middleware(['auth'])->prefix('dashboard')->name('dashboard.')->group(function () {
     // Dashboard home
     Route::get('/', function(){
-        return view('dashboard.index');
+        $months = $donationsByMonth = [];
+        if (auth()->check() && auth()->user()->role === 'admin') {
+            [$months, $donationsByMonth] = \App\Http\Controllers\dashboard\ReportController::getDonationStatsForChart();
+        }
+        return view('dashboard.index', compact('months', 'donationsByMonth'));
     })->name('index');
 
     // Campaign routes - restricted to admin and creator roles
@@ -168,3 +172,5 @@ Route::middleware(['auth'])->prefix('dashboard')->name('dashboard.')->group(func
         Route::resource('users', UserController::class);
     });
 });
+
+Route::get('/campaigns/{slug}/donors', [App\Http\Controllers\PublicController::class, 'campaignDonors'])->name('public.campaign.donors');

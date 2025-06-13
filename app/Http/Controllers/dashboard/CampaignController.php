@@ -38,9 +38,14 @@ class CampaignController extends Controller
         if ($request->has('status') && in_array($request->status, ['draft', 'active', 'completed', 'rejected'])) {
             $query->where('status', $request->status);
         }
-        // No default status filter - show all campaigns including drafts
 
-        $campaigns = $query->latest()->paginate(10);
+        if ($request->has('date_to') && $request->date_to) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $campaigns = $query->with(['category', 'user'])
+            ->latest()
+            ->get();
         $categories = Category::all(); // For filter dropdown
 
         return view('dashboard.campaign.index', compact('campaigns', 'categories'));
@@ -105,7 +110,7 @@ class CampaignController extends Controller
     public function show($slug)
     {
         $campaign = Campaign::where('slug', $slug)
-            ->with(['user', 'category', 'comments.user', 'updates', 'donations.user'])
+            ->with(['user', 'category', 'comments.user', 'updates', 'donations.user', 'feedbacks.user'])
             ->firstOrFail();
 
         return view('dashboard.campaign.show', compact('campaign'));

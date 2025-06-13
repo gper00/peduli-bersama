@@ -12,7 +12,7 @@
 @else
 <div class="page-inner">
     <div class="page-header">
-        <h4 class="page-title">Kelola Pesan Masuk</h4>
+        <h4 class="page-title">Pesan Masuk</h4>
         <ul class="breadcrumbs">
             <li class="nav-home">
                 <a href="{{ route('dashboard.index') }}">
@@ -23,7 +23,7 @@
                 <i class="flaticon-right-arrow"></i>
             </li>
             <li class="nav-item">
-                <a href="{{ route('dashboard.messages.index') }}">Kelola Pesan Masuk</a>
+                <a href="{{ route('dashboard.messages.index') }}"> Pesan Masuk</a>
             </li>
         </ul>
     </div>
@@ -90,11 +90,6 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-center">
-                        {{ $messages->links() }}
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -106,25 +101,6 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        $('#basic-datatables').DataTable({
-            "ordering": false,
-            "pageLength": 10,
-            "language": {
-                "lengthMenu": "Tampilkan _MENU_ data per halaman",
-                "zeroRecords": "Data tidak ditemukan",
-                "info": "Menampilkan halaman _PAGE_ dari _PAGES_",
-                "infoEmpty": "Tidak ada data yang tersedia",
-                "infoFiltered": "(difilter dari _MAX_ total data)",
-                "search": "Cari:",
-                "paginate": {
-                    "first": "Pertama",
-                    "last": "Terakhir",
-                    "next": "Selanjutnya",
-                    "previous": "Sebelumnya"
-                }
-            }
-        });
-
         // Sweet Alert untuk notifikasi
         const successMessage = $('#success-message').text();
         const errorMessage = $('#error-message').text();

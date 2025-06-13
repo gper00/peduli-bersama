@@ -71,6 +71,44 @@ class WithdrawalSeeder extends Seeder
                 'processed_by' => null,
                 'processed_at' => null,
             ],
+            [
+                'reference_number' => 'WD-' . strtoupper(Str::random(10)),
+                'campaign_id' => 4, // Bantuan Modal Usaha UMKM
+                'user_id' => 5, // Creator 2
+                'amount' => 20000000,
+                'status' => 'rejected',
+                'bank_name' => 'Bank Rakyat Indonesia (BRI)',
+                'account_number' => '5678901234',
+                'account_name' => 'Creator 2',
+                'bank_branch' => 'Yogyakarta',
+                'bank_code' => '002',
+                'purpose' => 'Pembayaran modal usaha untuk 5 UMKM terpilih',
+                'evidence_file' => null,
+                'notes' => 'Dokumen pendukung belum lengkap, mohon lengkapi terlebih dahulu',
+                'approved_by' => 1, // Admin user
+                'approved_at' => now()->subDays(2),
+                'processed_by' => null,
+                'processed_at' => null,
+            ],
+            [
+                'reference_number' => 'WD-' . strtoupper(Str::random(10)),
+                'campaign_id' => 5, // Beasiswa Anak Yatim
+                'user_id' => 5, // Creator 2
+                'amount' => 25000000,
+                'status' => 'pending',
+                'bank_name' => 'Bank Syariah Indonesia (BSI)',
+                'account_number' => '6789012345',
+                'account_name' => 'Creator 2',
+                'bank_branch' => 'Malang',
+                'bank_code' => '451',
+                'purpose' => 'Pembayaran beasiswa untuk 10 anak yatim',
+                'evidence_file' => null,
+                'notes' => 'Dana akan digunakan untuk biaya sekolah dan kebutuhan pendidikan',
+                'approved_by' => null,
+                'approved_at' => null,
+                'processed_by' => null,
+                'processed_at' => null,
+            ],
         ];
 
         foreach ($withdrawals as $withdrawal) {

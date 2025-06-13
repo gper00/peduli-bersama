@@ -135,13 +135,13 @@
                                 <h5 class="font-weight-bold mb-3 mt-4">Catatan</h5>
                                 <p>{{ $withdrawal->note ?: 'Tidak ada catatan' }}</p>
 
-                                @if($withdrawal->admin_note)
-                                <h5 class="font-weight-bold mb-3 mt-4">Catatan Admin</h5>
-                                <p>{{ $withdrawal->admin_note }}</p>
+                                {{-- Tampilkan alasan penolakan jika ada --}}
+                                @if($withdrawal->rejection_reason)
+                                    <p>{{ $withdrawal->rejection_reason }}</p>
                                 @endif
                             </div>
                         </div>
-            
+
                         <!-- Admin Action Buttons -->
                         @if(auth()->user()->role === 'admin' && $withdrawal->status === 'pending')
                         <div class="row mt-4">
@@ -154,18 +154,18 @@
                                             @method('PATCH')
                                             <input type="hidden" name="status" value="approved">
                                             <button type="submit" class="btn btn-success">
-                                                <i class="fa fa-check mr-2"></i> Setujui
+                                                <i class="fa fa-check mr-2"></i> Terima Penarikan
                                             </button>
                                         </form>
-                                        
+
                                         <button type="button" id="rejectBtn" class="btn btn-danger">
-                                            <i class="fa fa-times mr-2"></i> Tolak
+                                            <i class="fa fa-times mr-2"></i> Tolak Penarikan
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Rejection Modal -->
                         <div class="modal fade" id="rejectionModal" tabindex="-1" role="dialog" aria-labelledby="rejectionModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -181,10 +181,10 @@
                                             @csrf
                                             @method('PATCH')
                                             <input type="hidden" name="status" value="rejected">
-                                            
+
                                             <div class="form-group">
-                                                <label for="admin_note">Alasan Penolakan</label>
-                                                <textarea name="admin_note" id="admin_note" rows="3" class="form-control" required></textarea>
+                                                <label for="rejection_reason">Alasan Penolakan</label>
+                                                <textarea name="rejection_reason" id="rejection_reason" rows="3" class="form-control" required></textarea>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -196,7 +196,7 @@
                             </div>
                         </div>
                         @endif
-            
+
                         <!-- Complete Withdrawal Button (For Admin with Approved status) -->
                         @if(auth()->user()->role === 'admin' && $withdrawal->status === 'approved')
                         <div class="row mt-4">
@@ -248,7 +248,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Status Updates -->
                             @if($withdrawal->status !== 'pending')
                             <div class="timeline-item">

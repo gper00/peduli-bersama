@@ -80,7 +80,7 @@
                         </div>
                         <div class="col text-center">
                             <div class="p-2 bg-info text-white rounded">
-                                <h5>Pending</h5>
+                                <h5>Menunggu</h5>
                                 <h3>{{ $counts['pending'] }}</h3>
                             </div>
                         </div>
@@ -129,9 +129,13 @@
                                 <tr class="{{ $comment->status == 'pending' ? 'table-warning' : ($comment->status == 'spam' ? 'table-danger' : ($comment->status == 'deleted' ? 'table-secondary' : '')) }}">
                                     <td>{{ $index + 1 }}</td>
                                     <td>
+                                        @if($comment->user)
                                         <a href="{{ route('dashboard.users.show', ['user' => $comment->user_id]) }}">
                                             {{ $comment->user->name }}
                                         </a>
+                                        @else
+                                            {{ $comment->guest_name ?? 'Anonymous' }}
+                                        @endif
                                     </td>
                                     <td>
                                         <a href="{{ route('public.campaign', $comment->campaign->slug) }}">
@@ -166,14 +170,6 @@
                                             <button type="button" class="btn btn-link btn-primary btn-lg" data-toggle="modal" data-target="#commentModal{{ $comment->id }}">
                                                 <i class="fa fa-eye"></i>
                                             </button>
-
-                                            <form action="{{ route('dashboard.comments.toggle-pin', $comment->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-link btn-{{ $comment->is_pinned ? 'warning' : 'primary' }} btn-lg" data-toggle="tooltip" title="{{ $comment->is_pinned ? 'Unpin Komentar' : 'Pin Komentar' }}">
-                                                    <i class="fa fa-thumbtack"></i>
-                                                </button>
-                                            </form>
 
                                             <div class="dropdown d-inline">
                                                 <button class="btn btn-link btn-info btn-lg" data-toggle="dropdown">
@@ -229,10 +225,20 @@
                                                     <div class="modal-body">
                                                         <div class="row mb-3">
                                                             <div class="col-md-6">
-                                                                <strong>Pengguna:</strong> {{ $comment->user->name }}
+                                                                <strong>Pengguna:</strong>
+                                                                @if($comment->user)
+                                                                    {{ $comment->user->name }}
+                                                                @else
+                                                                    {{ $comment->guest_name ?? 'Anonymous' }}
+                                                                @endif
                                                             </div>
                                                             <div class="col-md-6">
-                                                                <strong>Email:</strong> {{ $comment->user->email }}
+                                                                <strong>Email:</strong>
+                                                                @if($comment->user)
+                                                                    {{ $comment->user->email }}
+                                                                @else
+                                                                    -
+                                                                @endif
                                                             </div>
                                                         </div>
                                                         <div class="row mb-3">
@@ -281,7 +287,12 @@
                                                         @if($comment->moderated_at)
                                                         <div class="row">
                                                             <div class="col-md-12">
-                                                                <strong>Dimoderasi oleh:</strong> {{ $comment->moderator->name }} pada {{ $comment->moderated_at->format('d M Y, H:i') }}
+                                                                <strong>Dimoderasi oleh:</strong>
+                                                                @if($comment->moderator)
+                                                                    {{ $comment->moderator->name }} pada {{ $comment->moderated_at->format('d M Y, H:i') }}
+                                                                @else
+                                                                    -
+                                                                @endif
                                                             </div>
                                                         </div>
                                                         @endif
@@ -322,11 +333,11 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-footer">
+                {{-- <div class="card-footer">
                     <div class="d-flex justify-content-center">
                         {{ $comments->links() }}
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -370,22 +381,8 @@
             e.preventDefault();
             const form = this;
 
-            swal({
-                title: "Apakah Anda yakin?",
-                text: "Komentar akan dihapus secara permanen dan tidak dapat dikembalikan!",
-                icon: "warning",
-                buttons: {
-                    cancel: {
-                        visible: true,
-                        text: "Batal",
-                        className: "btn btn-secondary"
-                    },
-                    confirm: {
-                        text: "Ya, hapus!",
-                        className: "btn btn-danger"
-                    }
-                }
-            }).then((willDelete) => {
+            confirmDelete("Komentar akan dihapus secara permanen dan tidak dapat dikembalikan!")
+                .then((willDelete) => {
                 if (willDelete) {
                     form.submit();
                 }

@@ -12,13 +12,13 @@
             </a>
         </div>
     </div>
-    
+
     @if(session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
     </div>
     @endif
-    
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -82,7 +82,7 @@
                                                 <a href="{{ route('dashboard.campaigns.edit', $campaign->slug) }}" class="btn btn-sm btn-primary">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-                                                
+
                                                 @if($campaign->status == 'draft')
                                                 <form action="{{ route('dashboard.campaigns.changeStatus', $campaign->slug) }}" method="POST" class="d-inline">
                                                     @csrf
@@ -93,7 +93,7 @@
                                                     </button>
                                                 </form>
                                                 @endif
-                                                
+
                                                 <form action="{{ route('dashboard.campaigns.destroy', $campaign->slug) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
@@ -108,7 +108,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="mt-4">
                             {{ $campaigns->links() }}
                         </div>

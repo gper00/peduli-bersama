@@ -119,7 +119,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     {{-- Only admins can see and change roles based on permissions --}}
                                     @if(auth()->user()->isAdmin() && auth()->id() !== $user->id)
                                     <div class="form-group row">
@@ -151,7 +151,7 @@
                                         </div>
                                     </div>
                                     @endif
-                                    
+
                                     <div class="form-group row">
                                         <label for="phone_number" class="col-form-label col-lg-3 text-lg-right">
                                             <span>Phone Number</span>
@@ -172,7 +172,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <label for="bio" class="col-form-label col-lg-3 text-lg-right">
                                             <span>Bio</span>
@@ -191,7 +191,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <label for="address" class="col-form-label col-lg-3 text-lg-right">
                                             <span>Address</span>
@@ -210,7 +210,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <label for="facebook_url" class="col-form-label col-lg-3 text-lg-right">
                                             <span>Facebook URL</span>
@@ -231,7 +231,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <label for="twitter_url" class="col-form-label col-lg-3 text-lg-right">
                                             <span>Twitter URL</span>
@@ -252,7 +252,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <label for="instagram_url" class="col-form-label col-lg-3 text-lg-right">
                                             <span>Instagram URL</span>
@@ -273,7 +273,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <label for="password" class="col-form-label col-lg-3 text-lg-right">
                                             <span>New Password</span>
@@ -293,7 +293,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <label for="repassword" class="col-form-label col-lg-3 text-lg-right">
                                             <span>Confirm New Password</span>
@@ -313,7 +313,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <div class="col-lg-3"></div>
                                         <div class="col-lg-9">

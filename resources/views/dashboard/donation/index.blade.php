@@ -107,7 +107,7 @@
                         <div class="col-7 col-stats">
                             <div class="numbers">
                                 <p class="card-category">Total Donasi</p>
-                                <h4 class="card-title">{{ $donations->total() }}</h4>
+                                <h4 class="card-title">{{ $donations->count() }}</h4>
                             </div>
                         </div>
                     </div>
@@ -261,13 +261,53 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="mt-4 d-flex justify-content-center">
+                    {{-- <div class="mt-4 d-flex justify-content-center">
                         {{ $donations->appends(request()->except('page'))->links() }}
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
     </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        // Konfirmasi update status donasi
+        $('.btn-confirm').on('click', function(e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            const action = $(this).data('action');
+
+            swal({
+                title: "Konfirmasi",
+                text: "Apakah Anda yakin ingin " + action + "?",
+                icon: "warning",
+                buttons: {
+                    cancel: {
+                        text: "Batal",
+                        value: false,
+                        visible: true,
+                        className: "btn btn-secondary",
+                        closeModal: true,
+                    },
+                    confirm: {
+                        text: "Ya, konfirmasi!",
+                        value: true,
+                        visible: true,
+                        className: "btn btn-primary",
+                        closeModal: true
+                    }
+                },
+                dangerMode: true,
+                closeOnClickOutside: false,
+                closeOnEsc: false
+            }).then((willConfirm) => {
+                if (willConfirm) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
 @endsection
