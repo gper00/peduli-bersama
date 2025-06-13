@@ -60,6 +60,7 @@ Namun, tidak semua orang tahu bagaimana cara menyalurkan bantuan secara tepat. P
   - Sakit
   - Yatim piatu
   - Pembangunan tempat ibadah
+  - Dan sebagainya bisa diatur
 - Lihat detail campaign
 - Donasi dengan mudah
 - Lihat statistik dan komentar
@@ -112,7 +113,6 @@ Namun, tidak semua orang tahu bagaimana cara menyalurkan bantuan secara tepat. P
 - PHP >= 8.1
 - Composer
 - MySQL >= 5.7
-- Node.js & NPM
 - Git
 
 ### Langkah-langkah Instalasi
@@ -126,7 +126,6 @@ Namun, tidak semua orang tahu bagaimana cara menyalurkan bantuan secara tepat. P
 2. **Install Dependencies**
    ```bash
    composer install
-   npm install
    ```
 
 3. **Konfigurasi Environment**
@@ -150,9 +149,9 @@ Namun, tidak semua orang tahu bagaimana cara menyalurkan bantuan secara tepat. P
    php artisan db:seed
    ```
 
-5. **Compile Assets**
+5. **Buat Symbolic Link untuk Storage**
    ```bash
-   npm run dev
+   php artisan storage:link
    ```
 
 6. **Jalankan Server Development**
