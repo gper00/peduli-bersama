@@ -153,6 +153,7 @@ Namun, tidak semua orang tahu bagaimana cara menyalurkan bantuan secara tepat. P
    ```bash
    php artisan storage:link
    ```
+   Jika masih terdapat masalah dengan symbolic link, hapus link `storage` yang ada pada `public/`
 
 6. **Jalankan Server Development**
    ```bash
