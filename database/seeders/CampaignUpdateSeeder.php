@@ -45,7 +45,7 @@ class CampaignUpdateSeeder extends Seeder
                 'user_id' => 5, // Creator 2
                 'title' => 'Pendaftaran UMKM Dibuka',
                 'description' => 'Pendaftaran untuk program bantuan modal usaha UMKM telah dibuka. Silakan daftarkan usaha Anda melalui formulir yang tersedia. Kami akan memilih penerima bantuan berdasarkan kriteria yang telah ditetapkan.',
-                'type' => 'announcement',
+                'type' => 'general',
                 'status' => 'published',
                 'pinned' => true,
             ],

@@ -62,7 +62,10 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            Category::create($category);
+            // Cek apakah kategori dengan slug yang sama sudah ada
+            if (!Category::where('slug', $category['slug'])->exists()) {
+                Category::create($category);
+            }
         }
     }
 }
