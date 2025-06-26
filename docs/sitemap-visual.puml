@@ -1,0 +1,45 @@
+@startmindmap
+title Sitemap Aplikasi Peduli Bersama
+
+* Peduli Bersama
+** Halaman Publik
+*** / (Beranda)
+*** /campaigns (Daftar Kampanye)
+*** /campaigns/{slug} (Detail Kampanye)
+**** /campaigns/{slug}/donors (Donatur)
+*** /about (Tentang Kami)
+*** /contact (Kontak)
+
+** Otentikasi & Halaman Statis
+*** /login (Masuk)
+*** /register (Daftar)
+*** /terms (Syarat & Ketentuan)
+*** /privacy (Kebijakan Privasi)
+
+** Dasbor Pengguna (/dashboard)
+*** /dashboard (Beranda Dasbor)
+*** Profil
+**** /profile (Lihat Profil)
+**** /profile/edit (Edit Profil)
+*** Kampanye (Admin & Creator)
+**** /campaigns (Kelola Kampanye)
+**** /campaigns/create (Buat Baru)
+**** /campaigns/{slug} (Detail)
+**** /my-campaigns (Kampanye Saya)
+*** Donasi
+**** /donations (Riwayat Donasi)
+**** /my-donations (Donasi Saya)
+**** /donations/{id}/receipt (Bukti)
+*** Notifikasi
+**** /notifications
+*** Laporan
+**** /reports
+*** Fitur Khusus Admin
+**** /users (Kelola Pengguna)
+**** /categories (Kelola Kategori)
+**** /messages (Kelola Pesan)
+**** /comments (Moderasi Komentar)
+**** /feedbacks (Kelola Umpan Balik)
+**** /withdrawals (Kelola Penarikan Dana)
+
+@endmindmap

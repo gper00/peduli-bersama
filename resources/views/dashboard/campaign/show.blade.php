@@ -400,7 +400,7 @@
                             <table class="table table-striped table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th>User</th>
+                                        <th>User</th>r
                                         <th>Comment</th>
                                         <th>Date</th>
                                     </tr>
