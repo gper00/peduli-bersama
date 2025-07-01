@@ -1,2 +1,12 @@
+# 1. Abaikan semua file dan folder di dalam /storage
 *
-!public/defaut/
+
+# 2. Tapi, JANGAN abaikan folder "public/" itu sendiri
+# Ini penting agar Git mau melihat isinya.
+!public/
+
+# 3. Sekarang, abaikan kembali SEMUA yang ada di dalam "public/"
+public/*
+
+# 4. Terakhir, buat pengecualian untuk folder "default/" di dalam "public/"
+!public/default/
