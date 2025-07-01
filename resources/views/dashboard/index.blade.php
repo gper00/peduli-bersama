@@ -22,7 +22,6 @@
             </ul>
         </div>
 
-        <!-- Welcome Message -->
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -273,6 +272,7 @@
             </div>
         </div>
         @elseif(auth()->user()->role == 'creator')
+        
         <!-- Creator Dashboard Content -->
         <div class="row">
             <div class="col-sm-6 col-md-3">
