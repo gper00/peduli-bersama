@@ -9,9 +9,7 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the categories.
-     */
+    
     public function index()
     {
         $categories = Category::orderBy('sort_order')->get();
